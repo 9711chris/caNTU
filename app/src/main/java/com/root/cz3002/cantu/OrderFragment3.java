@@ -27,22 +27,20 @@ public class OrderFragment3 extends Fragment {
         // Inflate the layout for this fragment
 
         ArrayList<WaitingDabaoer> waitingRequests = new ArrayList<WaitingDabaoer>();
-        waitingRequests.add(new WaitingDabaoer(1, "gg", "can1", "yong tau foo","SEARCHING"));
-        waitingRequests.add(new WaitingDabaoer(2, "gh", "can2", "yong tau foo","SEARCHING"));
-        waitingRequests.add(new WaitingDabaoer(4, "gf", "can3", "yong tau foo","SEARCHING"));
-        waitingRequests.add(new WaitingDabaoer(5, "gr", "can3", "yong tau foo","SEARCHING"));
-        waitingRequests.add(new WaitingDabaoer(6, "gt", "can3", "yong tau foo","SEARCHING"));
-        waitingRequests.add(new WaitingDabaoer(7, "gy", "can3", "yong tau foo","SEARCHING"));
-        waitingRequests.add(new WaitingDabaoer(8, "gu", "can3", "yong tau foo","SEARCHING"));
-        waitingRequests.add(new WaitingDabaoer(9, "gi", "can3", "yong tau foo", "SEARCHING"));
-        waitingRequests.add(new WaitingDabaoer(10, "go", "can3", "yong tau foo","SEARCHING"));
-        waitingRequests.add(new WaitingDabaoer(11,"gp", "can3", "yong tau foo","SEARCHING"));
+        waitingRequests.add(new WaitingDabaoer(1,"Pasta", "CAN A", "Italian Pasta", "CAN 11","SEARCHING","12 Sept 2017"));
+        waitingRequests.add(new WaitingDabaoer(2,"Fish Bread Crumbs", "CAN A", "Italian Pasta", "CAN 11","SEARCHING","4 Dec 2017"));
+        waitingRequests.add(new WaitingDabaoer(4,"Fish Bread Crumbs", "CAN A", "Italian Pasta", "CAN 11","SEARCHING","9 March 2017"));
+        waitingRequests.add(new WaitingDabaoer(5,"Fish Bread Crumbs","CAN A", "Italian Pasta", "CAN 11","SEARCHING","18 Feb 2017"));
+        waitingRequests.add(new WaitingDabaoer(6,"Fish Bread Crumbs", "CAN A", "Italian Pasta", "CAN 11","SEARCHING","13 Oct 2017"));
+        waitingRequests.add(new WaitingDabaoer(7,"Fish Bread Crumbs", "CAN A", "Italian Pasta", "CAN 11","SEARCHING","30 Dec 2017"));
+        waitingRequests.add(new WaitingDabaoer(8,"Fish Bread Crumbs","CAN A", "Italian Pasta", "CAN 11","SEARCHING","1 Sept 2017"));
 
         WaitingAdapter waitingAdapter = new WaitingAdapter(getActivity(), waitingRequests);
 
         View rootView = inflater.inflate(R.layout.list_view_from_button, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.listview_from_button);
         listView.setAdapter(waitingAdapter);
+
         return listView;
     }
 }

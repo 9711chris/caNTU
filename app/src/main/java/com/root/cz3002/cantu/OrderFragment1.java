@@ -8,8 +8,14 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
+<<<<<<< HEAD
+=======
+import android.widget.CompoundButton;
+import android.widget.ImageView;
+>>>>>>> 8f48140bb45cde2403befcf8d3bd98f5d623292f
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -23,6 +29,7 @@ import java.util.ArrayList;
 
 public class OrderFragment1 extends Fragment {
     ToPayAdapter toPayAdapter;
+    boolean checkpoint;
 
     public OrderFragment1() {
         // Required empty public constructor
@@ -44,35 +51,52 @@ public class OrderFragment1 extends Fragment {
         orderPayRequests.add(new OrderPayData(true, 3.00, "steamed chicken rice", "chicken rice","CAN A",2));
         orderPayRequests.add(new OrderPayData(true, 3.00, "steamed chicken rice", "chicken rice","CAN A",2));
 
-
+        //TODO: orderPayRequests is an ArrayList<OrderPayData> that will get the data from database
         toPayAdapter = new ToPayAdapter(getActivity(), orderPayRequests);
 
         View rootView = inflater.inflate(R.layout.order_fragment1, container, false);
 
-        CheckBox selectAll = (CheckBox) rootView.findViewById(R.id.select_all);
+        final CheckBox selectAll = (CheckBox) rootView.findViewById(R.id.select_all);
         selectAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for(int i=0;i<toPayAdapter.getCount();i++){
-                    if(!toPayAdapter.getItem(i).getIsChecked()){
-                        toPayAdapter.getItem(i).setIsChecked(true);
+                if(selectAll.isChecked()) {
+                    for (int i = 0; i < toPayAdapter.getCount(); i++) {
+                        if (!toPayAdapter.getItem(i).getIsChecked()) {
+                            toPayAdapter.getItem(i).setIsChecked(true);
+                        }
                     }
+                    toPayAdapter.notifyDataSetChanged();
                 }
-                toPayAdapter.notifyDataSetChanged();
+                else{
+                    for (int i = 0; i < toPayAdapter.getCount(); i++) {
+                        if (toPayAdapter.getItem(i).getIsChecked()) {
+                            toPayAdapter.getItem(i).setIsChecked(false);
+                        }
+                    }
+                    toPayAdapter.notifyDataSetChanged();
+                }
             }
         });
 
-        CheckBox deleteSelected = (CheckBox) rootView.findViewById(R.id.delete_selected);
-        deleteSelected.setOnClickListener(new View.OnClickListener(){
 
+        ImageView delete = (ImageView) rootView.findViewById(R.id.delete);
+        delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for(int i=0;i<toPayAdapter.getCount();i++){
+                checkpoint = false;
+                for(int i=0; i<toPayAdapter.getCount(); i++){
                     if(toPayAdapter.getItem(i).getIsChecked()){
-                        toPayAdapter.getItem(i).setIsChecked(false);
+                        //TODO: delete from database
+                        checkpoint = true;
                     }
                 }
-                toPayAdapter.notifyDataSetChanged();
+                if(checkpoint) {
+                    Toast.makeText(getContext(), "The order has been deleted", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(getContext(), "There is nothing to delete", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -105,6 +129,21 @@ public class OrderFragment1 extends Fragment {
 
         ListView listView = (ListView) rootView.findViewById(R.id.listview_from_button);
         listView.setAdapter(toPayAdapter);
+
+        /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(toPayAdapter.getItem(position).getIsChecked()){
+                    toPayAdapter.getItem(position).setIsChecked(false);
+                }
+                else{
+                    toPayAdapter.getItem(position).setIsChecked(true);
+                }
+                toPayAdapter.notifyDataSetChanged();
+
+            }
+        });
+        */
 
         return rootView;
     }

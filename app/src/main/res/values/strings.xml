@@ -7,4 +7,6 @@
     <string name="pay">Pay</string>
     <string name="order_receive">Order Received</string>
     <string name="total_price">Total Price: </string>
+    <string name="delivery_to">Delivery To: </string>
+    <string name="statusText">STATUS</string>
 </resources>

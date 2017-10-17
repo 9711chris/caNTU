@@ -39,24 +39,33 @@ public class WaitingAdapter extends ArrayAdapter<WaitingDabaoer> {
         // Get the {@link AndroidFlavor} object located at this position in the list
         WaitingDabaoer currentWaitingRequest = getItem(position);
 
-        // Find the TextView in the dabao_request_item.xml layout with the ID canteen_name
+        // Find the TextView in the order_fragment3.xml layout with the ID canteen_name
         TextView tv1 = (TextView) listItemView.findViewById(R.id.canteen_name);
         tv1.setText(currentWaitingRequest.getCanteenName());
 
-        // Find the TextView in the dabao_request_item.xml layout with the ID stall_name
+        // Find the TextView in the order_fragment3.xml layout with the ID canteen_name
+        TextView foodName = (TextView) listItemView.findViewById(R.id.food_name);
+        foodName.setText(currentWaitingRequest.getFoodName());
+
+        // Find the TextView in the order_fragment3.xml layout with the ID canteen_name
+        TextView status = (TextView) listItemView.findViewById(R.id.status);
+        status.setText(currentWaitingRequest.getStatus());
+
+        // Find the TextView in the order_fragment3.xml layout with the ID stall_name
         TextView tv2 = (TextView) listItemView.findViewById(R.id.stall_name);
         tv2.setText(currentWaitingRequest.getStallName());
 
-        // Find the TextView in the dabao_request_item.xml layout with the ID place_deliver
-        TextView tv3 = (TextView) listItemView.findViewById(R.id.deliver_to);
+        // Find the TextView in the order_fragment3.xml layout with the ID place_deliver
+        TextView tv3 = (TextView) listItemView.findViewById(R.id.delivery_to);
         tv3.setText(currentWaitingRequest.getDeliveryTo());
 
-        Button b1 = (Button) listItemView.findViewById(R.id.cancel);
-        b1.setText("CANCEL");
-        //b1.setOnClickListener(); implement to send data to database.
+        // Find the TextView in the order_fragment3.xml layout with the ID place_deliver
+        TextView timestamp = (TextView) listItemView.findViewById(R.id.timestamp);
+        timestamp.setText(currentWaitingRequest.getTimestamp());
 
-        // Return the whole list item layout (containing 2 TextViews and an ImageView)
-        // so that it can be shown in the ListView
+        Button b1 = (Button) listItemView.findViewById(R.id.cancel);
+        //TODO: b1 setOnClickListener to update database data -- delete the particular tuples.
+
         return listItemView;
     }
 }

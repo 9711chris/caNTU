@@ -361,7 +361,7 @@ public class MainActivity extends AppCompatActivity {
         location.setText("Location: "+stall.getCanteen());
 
         if(mode.equals("canteen")){
-            stallName.setBackgroundResource(R.drawable.rounded_corner_purple);
+            stallName.setBackgroundResource(R.drawable.background_purple);
             writeReview.setBackgroundResource(R.drawable.background_purple);
         }
 

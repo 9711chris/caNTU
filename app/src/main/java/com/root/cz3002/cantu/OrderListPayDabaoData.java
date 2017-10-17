@@ -8,19 +8,31 @@ public class OrderListPayDabaoData {
     private String foodName;
     private String stallName;
     private String canteenName;
-    private String timestamp;
+    private String deliveryTo;
+    private int qty;
+    private double price;
+    private double totalPrice;
 
-    OrderListPayDabaoData(String foodName, String stallName, String canteenName, String timestamp){
+    OrderListPayDabaoData(String foodName, String stallName, String canteenName, int qty, double price, double totalPrice){
         this.foodName = foodName;
         this.stallName = stallName;
         this.canteenName = canteenName;
-        this.timestamp = timestamp;
+        this.qty = qty;
+        this.price = price;
+        this.totalPrice = totalPrice;
     }
 
+    public void setDeliveryTo(String deliveryTo){
+        this.deliveryTo = deliveryTo;
+    }
+    public String getDeliveryTo(){return deliveryTo;}
     public String getFoodName(){return foodName;}
     public String getStallName(){return stallName;}
     public String getCanteenName(){return canteenName;}
-    public String getTimestamp(){return timestamp;}
+    public int getQty(){return qty;}
+    public double getPrice(){return price;}
+    public double getTotalPrice(){return totalPrice;}
+
 }
 
 
