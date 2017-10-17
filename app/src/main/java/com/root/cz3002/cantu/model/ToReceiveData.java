@@ -13,7 +13,7 @@ public class ToReceiveData {
     private double totalPrice;
     private String status;
 
-    ToReceiveData(double price, String foodName, String stallName, String canteenName, int qty, double totalPrice, String status){
+    public ToReceiveData(double price, String foodName, String stallName, String canteenName, int qty, double totalPrice, String status){
         this.price = price;
         this.foodName = foodName;
         this.stallName = stallName;

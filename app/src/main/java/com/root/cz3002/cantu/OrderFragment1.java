@@ -1,7 +1,6 @@
 package com.root.cz3002.cantu;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -11,14 +10,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
-<<<<<<< HEAD
-=======
-import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
->>>>>>> 8f48140bb45cde2403befcf8d3bd98f5d623292f
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import com.root.cz3002.cantu.model.OrderPayData;
 
 import java.util.ArrayList;
@@ -122,15 +118,49 @@ public class OrderFragment1 extends Fragment {
         payDabao.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), OrderListPayDabaoActivity.class);
-                startActivity(intent);
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+                alertDialog.setMessage("Where do you want it to be delivered?");
+                final EditText input = new EditText(getContext());
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
+                input.setLayoutParams(lp);
+                alertDialog.setView(input);
+                alertDialog.setPositiveButton("SUBMIT",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                String placeDeliver = input.getText().toString();
+                                if(!placeDeliver.isEmpty()){
+                                    for(int i=0; i<toPayAdapter.getCount();i++){
+                                        if (toPayAdapter.getItem(i).getIsChecked()) {
+                                            toPayAdapter.getItem(i).setDeliverTo(placeDeliver);
+                                        }
+                                    }
+                                    //TODO: update database send order to waiting tab
+                                    toPayAdapter.notifyDataSetChanged();
+                                    Toast.makeText(getContext(), "The delivery place has been recorded", Toast.LENGTH_SHORT).show();
+                                }
+                                else{
+                                    Toast.makeText(getContext(), "You have to add the delivery place", Toast.LENGTH_SHORT).show();
+                                }
+
+                            }
+                        });
+                alertDialog.setNegativeButton("CANCEL",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+
+                alertDialog.show();
             }
         });
 
         ListView listView = (ListView) rootView.findViewById(R.id.listview_from_button);
         listView.setAdapter(toPayAdapter);
 
-        /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if(toPayAdapter.getItem(position).getIsChecked()){
@@ -143,7 +173,7 @@ public class OrderFragment1 extends Fragment {
 
             }
         });
-        */
+
 
         return rootView;
     }

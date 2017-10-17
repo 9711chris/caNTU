@@ -13,7 +13,7 @@ public class WaitingDabaoer {
     private String timestamp;
     private String foodName;
 
-    WaitingDabaoer(int id, String foodName, String canteenName, String stallName, String deliveryTo, String status,String timestamp){
+    public WaitingDabaoer(int id, String foodName, String canteenName, String stallName, String deliveryTo, String status,String timestamp){
         this.id= id;
         this.foodName = foodName;
         this.canteenName = canteenName;
