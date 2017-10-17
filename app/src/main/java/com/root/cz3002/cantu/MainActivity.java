@@ -241,7 +241,6 @@ public class MainActivity extends AppCompatActivity {
         bottomBarCanteen = (RelativeLayout) findViewById(R.id.bottom_bar_category);
         TextView categoryInfo = (TextView) findViewById(R.id.textCanteen);
 
-        System.out.println("MODE: ");
         if(mode.equals("canteen")) {
             System.out.println("IN CANTEEN");
             categoryInfo.setBackgroundResource(R.drawable.rounded_corner_purple);
