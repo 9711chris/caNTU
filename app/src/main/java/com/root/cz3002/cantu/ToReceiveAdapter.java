@@ -8,6 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.root.cz3002.cantu.model.ToReceiveData;
+
 import java.util.ArrayList;
 
 /**

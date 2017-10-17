@@ -1,4 +1,4 @@
-package com.root.cz3002.cantu;
+package com.root.cz3002.cantu.model;
 
 /**
  * Created by christantia on 8/10/17.

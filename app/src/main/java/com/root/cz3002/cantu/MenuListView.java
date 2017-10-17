@@ -1,14 +1,12 @@
 package com.root.cz3002.cantu;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.root.cz3002.cantu.model.MenuItem;
 
 import me.himanshusoni.quantityview.QuantityView;
 

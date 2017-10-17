@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.root.cz3002.cantu.model.ToReceiveData;
+
 import java.util.ArrayList;
 
 /**

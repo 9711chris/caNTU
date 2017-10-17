@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
+import com.root.cz3002.cantu.model.CreditItem;
+
 /**
  * Created by brigi on 10/10/2017.
  */

@@ -2,9 +2,10 @@ package com.root.cz3002.cantu;
 
 import android.content.Context;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.root.cz3002.cantu.model.Stall;
 
 /**
  * Created by Christantia on 10/6/2017.

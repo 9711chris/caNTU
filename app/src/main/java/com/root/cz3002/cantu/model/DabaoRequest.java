@@ -1,4 +1,4 @@
-package com.root.cz3002.cantu;
+package com.root.cz3002.cantu.model;
 
 import java.util.Map;
 
