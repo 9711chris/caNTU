@@ -312,8 +312,8 @@ public class MainActivity extends AppCompatActivity {
         //Dummy
 
         reviews.clear();
-        Review review1 = new Review(1,"shelina","Very delicious!", "11-08-2017 17:05", 4);
-        Review review2 = new Review(2,"lusandro","Urgh bad taste!", "11-08-2017 16:00", 2);
+        Review review1 = new Review(1, stall.getName(),"shelina","Very delicious!", "11-08-2017 17:05", 4);
+        Review review2 = new Review(2, stall.getName(),"lusandro","Urgh bad taste!", "11-08-2017 16:00", 2);
 
         reviews.add(review1);
         reviews.add(review2);
@@ -390,7 +390,7 @@ public class MainActivity extends AppCompatActivity {
 
                         //to refresh layout
                         //with dummy
-                        Review review3 = new Review(3,"Lorem","Meh!", "11-08-2017 18:30", 1);
+                        Review review3 = new Review(3, theStall.getName(),"Lorem","Meh!", "11-08-2017 18:30", 1);
                         reviews.add(review3);
                         System.out.println(reviews);
                         runOnUiThread(run);

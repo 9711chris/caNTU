@@ -10,13 +10,15 @@ import java.util.Date;
 public class Review {
 
     private int id;
+    private String stallName;
     private String userName;
     private String comment;
     private String dateTime;
     private float rating;
 
-    public Review (int id, String userName, String comment, String dateTime, float rating){
+    public Review (int id, String stallName, String userName, String comment, String dateTime, float rating){
         this.id = id;
+        this.stallName = stallName;
         this.userName = userName;
         this.comment = comment;
         this.dateTime = dateTime;
@@ -25,6 +27,9 @@ public class Review {
 
     public int getId(){
         return id;
+    }
+    public String getStallName(){
+        return stallName;
     }
     public String getUserName(){
         return userName;
@@ -40,6 +45,7 @@ public class Review {
     }
 
     public void setId(int id){ this.id = id;}
+    public void setStallName(String stallName){ this.stallName = stallName;}
     public void setUserName(String userName){ this.userName = userName; }
     public void setComment(String comment){ this.comment = comment; }
     public void setDateTime(String dateTime){ this.dateTime = dateTime; }
