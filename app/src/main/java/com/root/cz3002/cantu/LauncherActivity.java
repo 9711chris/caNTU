@@ -11,6 +11,7 @@ import android.widget.Button;
 
 public class LauncherActivity extends AppCompatActivity {
 
+    private String id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,9 +27,10 @@ public class LauncherActivity extends AppCompatActivity {
 
         Button login = (Button) findViewById(R.id.login);
         Button logout = (Button) findViewById(R.id.logout);
+
         Intent intent = getIntent();
         if (intent.hasExtra("ID")) {
-            String id = bundleOld.getString("ID");
+            id = bundleOld.getString("ID");
             login.setVisibility(View.INVISIBLE);
             logout.setVisibility(View.VISIBLE);
             logout.setOnClickListener(new View.OnClickListener() {
@@ -46,6 +48,8 @@ public class LauncherActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(context, MainActivity.class);
                 bundle.putString("MODE", "canteen");
+                if (id != null)
+                    bundle.putString("ID", id);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -55,6 +59,8 @@ public class LauncherActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(context, MainActivity.class);
                 bundle.putString("MODE", "cuisine");
+                if (id != null)
+                    bundle.putString("ID", id);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
