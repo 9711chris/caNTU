@@ -5,19 +5,35 @@ package com.root.cz3002.cantu.model;
  */
 
 public class MenuItem {
-    private int id;
+    private long id;
     private String name;
     private String stall;
+    private String canteen;
+
+    public String getCanteen() {
+        return canteen;
+    }
+
+    public void setCanteen(String canteen) {
+        this.canteen = canteen;
+    }
+
     private double price;
 
-    public MenuItem (int id, String name, String stall, double price){
+    public MenuItem (long id, String name, String stall, double price,String canteen){
         this.id = id;
         this.name = name;
+        this.canteen=canteen;
         this.stall = stall;
         this.price = price;
     }
 
-    public int getId(){
+    public MenuItem()
+    {
+
+    }
+
+    public long getId(){
         return id;
     }
     public String getName(){
@@ -30,7 +46,7 @@ public class MenuItem {
         return price;
     }
 
-    public void setId(int id){
+    public void setId(long id){
         this.id = id;
     }
 

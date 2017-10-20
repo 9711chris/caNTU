@@ -11,6 +11,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,15 +27,26 @@ import android.widget.Toast;
 import android.widget.ListView;
 
 import com.root.cz3002.cantu.model.MenuItem;
+import com.root.cz3002.cantu.model.OrderPayData;
 import com.root.cz3002.cantu.model.Review;
 import com.root.cz3002.cantu.model.Stall;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+
 import java.util.ArrayList;
+import java.util.Map;
 
 import me.himanshusoni.quantityview.QuantityView;
 
 public class MainActivity extends AppCompatActivity {
-
+    private static final String MENU ="menu" ;
+    public static ArrayList<OrderPayData> orderPayRequests=new ArrayList<OrderPayData>();
+    private static String STALL="stall";
     private String id;
     private String mode;
     private LinearLayout list;
@@ -48,12 +60,24 @@ public class MainActivity extends AppCompatActivity {
     private ListView reviewListView;
     private Runnable run;
 
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference canteenDatabaseReference;
+    private ValueEventListener canteenValueEventListener;
+    private ValueEventListener cuisineValueEventListener;
+
+    private ValueEventListener stallValueEventListener;
+    private DatabaseReference cuisineDatabaseReference;
+
+    private ValueEventListener dishValueEventListener;
+    private DatabaseReference dishDataBaseReference;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        id=null;
         //Hide upper bars
+        firebaseDatabase=FirebaseDatabase.getInstance();
         View decorView = getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
@@ -66,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
         }
         if (intent.hasExtra("ID")) {
             id = bundleOld.getString("ID");
+            Log.e("ID", "I'm working bro");
+            Toast.makeText(MainActivity.this,"I am "+id, Toast.LENGTH_LONG).show();
         }
 
         final Context context = this;
@@ -75,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
         list = (LinearLayout) inflater.inflate(R.layout.list_view, (ViewGroup) findViewById(R.id.list));
         if (mode.equals("canteen")) {
+            canteenDatabaseReference=firebaseDatabase.getReference().child("canteen");
             View upperBar = inflater.inflate(R.layout.canteen_bar, (ViewGroup) findViewById(R.id.toolbar));
             switchMode.setImageResource(R.drawable.cuisine);
             switchMode.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.holo_orange_light)));
@@ -92,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
             populateList(findViewById(R.id.cana));
         }
         else {
+            //stallDatabaseReference=firebaseDatabase.getReference().child("stalls");
             View upperBar = inflater.inflate(R.layout.cuisine_bar, (ViewGroup) findViewById(R.id.toolbar));
             switchMode.setImageResource(R.drawable.store);
             switchMode.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.holo_purple)));
@@ -154,8 +182,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean addNewItemInList(LinearLayout list, final Stall cur, final MenuItem menu) {
-        LinearLayout a = new LinearLayout(this);
-        a.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout linearLayout = new LinearLayout(this);
+        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
 
         if(cur != null & menu==null) {
             StallListView view = new StallListView(this,cur);
@@ -165,9 +193,9 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 view.setBackgroundResource(R.drawable.background_border_orange);
             }
-            a.addView(view);
-            a.setTag(cur);
-            a.setOnClickListener(new View.OnClickListener() {
+            linearLayout.addView(view);
+            linearLayout.setTag(cur);
+            linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     bottomBarCanteen.setVisibility(View.INVISIBLE);
@@ -183,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 menuView.setBackgroundResource(R.drawable.background_border_orange);
             }
-            a.addView(menuView);
+            linearLayout.addView(menuView);
 
             ImageView inputToOrder = (ImageView) menuView.findViewById(MenuListView.ORDER_INT);
             final QuantityView quantity = (QuantityView) menuView.findViewById(MenuListView.QUANTITY_INT);
@@ -194,21 +222,29 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     MenuItem menuItem = (MenuItem) v.getTag();
+                    OrderPayData o=new OrderPayData(true,"user",
+                            menuItem.getPrice(),menuItem.getName(),
+                            menuItem.getStall(),
+                            "Canteen "+menuItem.getCanteen(),
+                            quantity.getQuantity());
+                    Log.e("DATA", /*menuItem.getName()+*/" "+menuItem.getStall()+" "+menuItem.getPrice()+" "+quantity.getQuantity());
+                    MainActivity.orderPayRequests.add(o);
 
                     //To Order Database input menu and qty
 
-                    Toast.makeText(MainActivity.this, "Input to DB "+ menuItem.getName() + " with quantity "+quantity.getQuantity(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Input to DB " + menuItem.getName() + " with quantity " + quantity.getQuantity(), Toast.LENGTH_SHORT).show();
 
                 }
             });
 
         }
 
-        list.addView(a);
+        list.addView(linearLayout);
         return false;
     }
 
     public void populateList(View v) {
+        Log.e("Running populate","Running");
         list.removeAllViews();
         if(bottomBar!=null){
             bottomBar.removeAllViews();
@@ -217,10 +253,51 @@ public class MainActivity extends AppCompatActivity {
 
         String category = v.getTag().toString();
 
-        Toast.makeText(MainActivity.this, category, Toast.LENGTH_SHORT).show();
+        Log.e("Mode ", mode);
+        if(mode.equals("canteen")) {
+
+            canteenDatabaseReference = firebaseDatabase.getReference().child("canteen").child(category.toString()).child("stalls");
+            Log.e("yoyo ", canteenDatabaseReference.getRoot().toString());
+            canteenValueEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    list.removeAllViews();
+                    Log.e("Running Running", "Running");
+                    Map<String, Object> data = (Map<String, Object>) dataSnapshot.getValue();
+                    addDataToList(data,STALL);
+                }
+
+                @Override
+                public void onCancelled (DatabaseError databaseError){
+
+                }
+            };
+            canteenDatabaseReference.addValueEventListener(canteenValueEventListener);
+
+        }
+        else if(mode.equals("cuisine")){
+            cuisineDatabaseReference=firebaseDatabase.getReference().child("cuisine").child(category);
+
+            cuisineValueEventListener=new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    list.removeAllViews();
+                    Log.e("It ran: ", "Yes");
+                    Map<String,Object> data=(Map<String, Object>) dataSnapshot.getValue();
+                    addDataToList(data,STALL);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            cuisineDatabaseReference.addValueEventListener(cuisineValueEventListener);
+        }
+
         //dummy, example for populating list
-        Stall temp = new Stall(1,"MiniWok","A","Chinese","10:00-20:00");
-        addNewItemInList(list, temp, null);
+        /*Stall temp = new Stall(1,"MiniWok","A","Chinese","10:00-20:00");
+        addNewItemInList(list, temp, null);*/
 
         //populate groupStalls arraylist
         //using Database's method
@@ -264,14 +341,22 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(MainActivity.this, stallName, Toast.LENGTH_LONG).show();
 
         //dummy, example for populating Menu Items
+        dishDataBaseReference=firebaseDatabase.getReference().child("stall").child(stallName);
+        //dummy, example for populating Menu Items
+        dishValueEventListener=new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String,Object> data= (Map<String, Object>) dataSnapshot.getValue();
+                addDataToList(data,MENU);
+            }
 
-        for(int i=0;i<10;i++){
-            MenuItem item = new MenuItem(i,"Sambal Fried Chicken","MiniWok",3.50);
-            addNewItemInList(list, null, item);
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-            MenuItem item2 = new MenuItem(i,"Kung Pao Chicken Rice","MiniWok",4.00);
-            addNewItemInList(list, null, item2);
-        }
+            }
+        };
+        dishDataBaseReference.addValueEventListener(dishValueEventListener);
+
 
         inStall = true;
 
@@ -427,6 +512,38 @@ public class MainActivity extends AppCompatActivity {
 
         // code here to show dialog
         super.onBackPressed();  // optional depending on your needs
+
+    }
+
+    private void addDataToList(Map<String,Object> data,String type) {
+        if (data != null) {
+            if (type.equals(STALL)) {
+                for (Map.Entry<String, Object> s : data.entrySet()) {
+
+                    Map<String, Object> stall = (Map<String, Object>) s.getValue();
+                    Stall st = new Stall();
+                    st.setName(stall.get("name").toString());
+                    st.setCanteen(stall.get("canteen").toString());
+                    st.setCuisine(stall.get("cuisine").toString());
+                    st.setOpeningHour(stall.get("OpeningHours").toString());
+                    st.setId((Long) stall.get("id"));
+                    addNewItemInList(list, st, null);
+                }
+            } else if (type.equals(MENU)) {
+                for (Map.Entry<String, Object> s : data.entrySet()) {
+
+                    Map<String, Object> menu = (Map<String, Object>) s.getValue();
+                    MenuItem dish = new MenuItem((Long) menu.get("id"),
+                            menu.get("name").toString(),
+                            menu.get("stall").toString(), (Double) menu.get("price"),menu.get("canteen").toString());
+//                    dish.setName();
+                    addNewItemInList(list, null, dish);
+                }
+            } else {
+                Toast.makeText(MainActivity.this, "Sorry no Data", Toast.LENGTH_SHORT).show();
+                ;
+            }
+        }
 
     }
 

@@ -50,6 +50,7 @@ public class LauncherActivity extends AppCompatActivity {
                 bundle.putString("MODE", "canteen");
                 if (id != null)
                     bundle.putString("ID", id);
+
                 intent.putExtras(bundle);
                 startActivity(intent);
             }

@@ -10,14 +10,16 @@ public class OrderPayData {
     private String foodName;
     private String stallName;
     private String canteenName;
+    private String username;
     private int qty;
     private double totalPrice;
     private String deliverTo; // asked when
 
-    public OrderPayData(boolean isChecked, double price, String foodName, String stallName, String canteenName,  int qty){
+    public OrderPayData(boolean isChecked, String username, double price, String foodName, String stallName, String canteenName,  int qty){
         this.isChecked = isChecked;
         this.price = price;
         this.foodName = foodName;
+        this.username = username;
         this.stallName = stallName;
         this.canteenName = canteenName;
         this.qty = qty;
@@ -25,6 +27,18 @@ public class OrderPayData {
         computeTotalPrice();
     }
 
+    public OrderPayData()
+    {
+
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     public boolean getIsChecked(){return isChecked;}
     public void setIsChecked(boolean isChecked){

@@ -5,13 +5,13 @@ package com.root.cz3002.cantu.model;
  */
 
 public class Stall {
-    private int id;
+    private long id;
     private String name;
     private String canteen;
     private String cuisine;
     private String openingHour;
 
-    public Stall (int id, String name, String canteen, String cuisine, String openingHour){
+    public Stall (long id, String name, String canteen, String cuisine, String openingHour){
         this.id = id;
         this.name = name;
         this.canteen = canteen;
@@ -19,7 +19,30 @@ public class Stall {
         this.openingHour = openingHour;
     }
 
-    public int getId(){
+    public Stall()
+    {}
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCanteen(String canteen) {
+        this.canteen = canteen;
+    }
+
+    public void setCuisine(String cuisine) {
+        this.cuisine = cuisine;
+    }
+
+    public void setOpeningHour(String openingHour) {
+        this.openingHour = openingHour;
+    }
+
+    public long getId(){
         return id;
     }
     public String getName(){

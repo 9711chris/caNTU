@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "960862697947",
+    "firebase_url": "https://cantu-773c5.firebaseio.com",
+    "project_id": "cantu-773c5",
+    "storage_bucket": "cantu-773c5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:960862697947:android:4b2ce069ca566fd8",
+        "android_client_info": {
+          "package_name": "com.root.cz3002.cantu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "960862697947-r0p6bighau45rs8dh6nurk7je70do1td.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.root.cz3002.cantu",
+            "certificate_hash": "b71a3cd288690a5b9ab9cd10779745c3ec8030be"
+          }
+        },
+        {
+          "client_id": "960862697947-4fub6vff4i5qh3klv4clk6u38dluvmo2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATkllbbE6Yv6AkIqaDAVWXozFLgz5IB6c"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "960862697947-4fub6vff4i5qh3klv4clk6u38dluvmo2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

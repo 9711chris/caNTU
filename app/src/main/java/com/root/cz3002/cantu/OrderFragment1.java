@@ -35,17 +35,7 @@ public class OrderFragment1 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        ArrayList<OrderPayData> orderPayRequests = new ArrayList<OrderPayData>();
-        orderPayRequests.add(new OrderPayData(true, 2.80, "steamed chicken rice", "chicken rice","CAN A",2));
-        orderPayRequests.add(new OrderPayData(true, 4.50, "fish bread crumb", "italian","CAN A",2));
-        orderPayRequests.add(new OrderPayData(true, 2.80, "roasted chicken rice", "chicken rice","CAN A",1));
-        orderPayRequests.add(new OrderPayData(true, 3.00, "steamed chicken rice", "chicken rice","CAN A",2));
-        orderPayRequests.add(new OrderPayData(true, 3.00, "steamed chicken rice", "chicken rice","CAN A",2));
-        orderPayRequests.add(new OrderPayData(true, 3.00, "steamed chicken rice", "chicken rice","CAN A",2));
-        orderPayRequests.add(new OrderPayData(true, 3.00, "steamed chicken rice", "chicken rice","CAN A",2));
-        orderPayRequests.add(new OrderPayData(true, 3.00, "steamed chicken rice", "chicken rice","CAN A",2));
-        orderPayRequests.add(new OrderPayData(true, 3.00, "steamed chicken rice", "chicken rice","CAN A",2));
-        orderPayRequests.add(new OrderPayData(true, 3.00, "steamed chicken rice", "chicken rice","CAN A",2));
+        ArrayList<OrderPayData> orderPayRequests = MainActivity.orderPayRequests;
 
         //TODO: orderPayRequests is an ArrayList<OrderPayData> that will get the data from database
         toPayAdapter = new ToPayAdapter(getActivity(), orderPayRequests);
