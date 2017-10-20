@@ -2,6 +2,7 @@ package com.root.cz3002.cantu;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.renderscript.Sampler;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -15,6 +16,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.root.cz3002.cantu.model.OrderPayData;
 
 import java.util.ArrayList;
@@ -26,7 +33,10 @@ import java.util.ArrayList;
 public class OrderFragment1 extends Fragment {
     ToPayAdapter toPayAdapter;
     boolean checkpoint;
-
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference orderDatabaseReference;
+    public static ArrayList<String> keys=new ArrayList<String>();
+//    private ValueEventListener orderValueEventListener;
     public OrderFragment1() {
         // Required empty public constructor
     }
@@ -34,8 +44,9 @@ public class OrderFragment1 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        ArrayList<OrderPayData> orderPayRequests = MainActivity.orderPayRequests;
+        firebaseDatabase=FirebaseDatabase.getInstance();
+        orderDatabaseReference=firebaseDatabase.getReference().child("orders");
+        final ArrayList<OrderPayData> orderPayRequests = MainActivity.orderPayRequests;
 
         //TODO: orderPayRequests is an ArrayList<OrderPayData> that will get the data from database
         toPayAdapter = new ToPayAdapter(getActivity(), orderPayRequests);
@@ -74,6 +85,7 @@ public class OrderFragment1 extends Fragment {
                 for(int i=0; i<toPayAdapter.getCount(); i++){
                     if(toPayAdapter.getItem(i).getIsChecked()){
                         //TODO: delete from database
+                        orderPayRequests.remove(i);
                         checkpoint = true;
                     }
                 }
@@ -97,12 +109,16 @@ public class OrderFragment1 extends Fragment {
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog, int whichButton) {
+                               String key= orderDatabaseReference.child(orderPayRequests.get(0).getStallName().toString()).push().getKey();
+                                keys.add(key);
+                                orderDatabaseReference.child(orderPayRequests.get(0).getStallName().toString()).child(key).setValue(orderPayRequests);
                                 //TODO:send order to database
                                 Toast.makeText(getContext(), "Payment Confirmation Successfull", Toast.LENGTH_SHORT).show();
                             }})
                         .setNegativeButton(android.R.string.no, null).show();
             }
         });
+
 
         Button payDabao = (Button) rootView.findViewById(R.id.pay_dabao);
         payDabao.setOnClickListener(new View.OnClickListener() {

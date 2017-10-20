@@ -222,6 +222,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     MenuItem menuItem = (MenuItem) v.getTag();
+                    if(quantity.getQuantity()!=0){
                     OrderPayData o=new OrderPayData(true,"user",
                             menuItem.getPrice(),menuItem.getName(),
                             menuItem.getStall(),
@@ -229,10 +230,16 @@ public class MainActivity extends AppCompatActivity {
                             quantity.getQuantity());
                     Log.e("DATA", /*menuItem.getName()+*/" "+menuItem.getStall()+" "+menuItem.getPrice()+" "+quantity.getQuantity());
                     MainActivity.orderPayRequests.add(o);
+                        Toast.makeText(MainActivity.this, "Input to DB " + menuItem.getName() + " with quantity " + quantity.getQuantity(), Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                    {
+                        Toast.makeText(MainActivity.this,"Look at the quantity la", Toast.LENGTH_SHORT).show();
+                    }
 
                     //To Order Database input menu and qty
 
-                    Toast.makeText(MainActivity.this, "Input to DB " + menuItem.getName() + " with quantity " + quantity.getQuantity(), Toast.LENGTH_SHORT).show();
+
 
                 }
             });
