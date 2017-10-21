@@ -126,6 +126,7 @@ public class OwnerActivity extends AppCompatActivity {
         eventListener=new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                //refresh(null);
                 double sum;
                 int count=0;
 
