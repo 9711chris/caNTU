@@ -38,7 +38,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 
 import me.himanshusoni.quantityview.QuantityView;
@@ -231,6 +233,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.e("DATA", /*menuItem.getName()+*/" "+menuItem.getStall()+" "+menuItem.getPrice()+" "+quantity.getQuantity());
                     MainActivity.orderPayRequests.add(o);
                         Toast.makeText(MainActivity.this, "Input to DB " + menuItem.getName() + " with quantity " + quantity.getQuantity(), Toast.LENGTH_SHORT).show();
+                        quantity.setQuantity(0);
                     }
                     else
                     {
@@ -375,39 +378,37 @@ public class MainActivity extends AppCompatActivity {
         if(mode.equals("canteen")) {
             findViewById(R.id.textStall).setBackgroundResource(R.drawable.rounded_corner_purple);
         }
+
         bottomBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showInfoAndReviews(stall);
             }
         });
-
-        //populate menuItems arraylist
-        //using Database's method
-       /* for (MenuItem item : menuItems) {
-            addNewItemInList(list, item);
-        }*/
     }
 
     private void showInfoAndReviews(Stall stall) {
 
         final Stall theStall = stall;
+        final int numOfReviews = 0;
 
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         LayoutInflater inflater = this.getLayoutInflater();
         View bottomSheetView = null;
 
-        //populate reviews arraylist order on recent
-        //using Database's method
-
-        //Dummy
-
         reviews.clear();
+
+        //inside loop of DB
+        //compare the stall.getName() in DB;
+        //get numOfReviews;
+
         Review review1 = new Review(1, stall.getName(),"shelina","Very delicious!", "11-08-2017 17:05", 4);
         Review review2 = new Review(2, stall.getName(),"lusandro","Urgh bad taste!", "11-08-2017 16:00", 2);
 
         reviews.add(review1);
         reviews.add(review2);
+
+        //
 
         if(reviews.isEmpty()){
             bottomSheetView = inflater.inflate(R.layout.bottom_sheet, null);
@@ -475,15 +476,16 @@ public class MainActivity extends AppCompatActivity {
                         RatingBar ratingBar = (RatingBar) dialogView.findViewById(R.id.ratingBarWrite);
                         float rating = ratingBar.getRating();
 
-                        //Input into Database Here
+                        //Toast.makeText(MainActivity.this, "Rating: "+rating+" and Comment: "+comment, Toast.LENGTH_SHORT).show();
 
-                        Toast.makeText(MainActivity.this, "Rating: "+rating+" and Comment: "+comment, Toast.LENGTH_SHORT).show();
+                        String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
 
-                        //to refresh layout
-                        //with dummy
-                        Review review3 = new Review(3, theStall.getName(),"Lorem","Meh!", "11-08-2017 18:30", 1);
+                        //Pass theStall.getName(), id, comment, currentDateTimeString, rating to DB
+
+                        Review review3 = new Review(numOfReviews+1, theStall.getName(), String.valueOf(id) , comment, currentDateTimeString, rating);
+
                         reviews.add(review3);
-                        System.out.println(reviews);
+
                         runOnUiThread(run);
                     }
                 });
