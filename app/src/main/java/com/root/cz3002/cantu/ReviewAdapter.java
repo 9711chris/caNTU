@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.root.cz3002.cantu.model.Review;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -96,7 +97,8 @@ public class ReviewAdapter extends ArrayAdapter<Review> {
         }
 
         holder.name.setText(data.get(position).getUserName());
-        holder.rating.setRating(data.get(position).getRating());
+        DecimalFormat decimalFormat=new DecimalFormat("#");
+        holder.rating.setRating((float)data.get(position).getRating());
         holder.comment.setText(data.get(position).getComment());
         holder.dateTime.setText(data.get(position).getDateTime());
 
