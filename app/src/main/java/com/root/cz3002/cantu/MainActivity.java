@@ -567,4 +567,20 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(canteenValueEventListener!=null)
+        {
+            canteenDatabaseReference.removeEventListener(canteenValueEventListener);
+        }if(cuisineValueEventListener!=null)
+        {
+            cuisineDatabaseReference.removeEventListener(cuisineValueEventListener);
+        }
+        if(dishValueEventListener!=null)
+        {
+            dishDataBaseReference.removeEventListener(dishValueEventListener);
+        }
+
+    }
 }
