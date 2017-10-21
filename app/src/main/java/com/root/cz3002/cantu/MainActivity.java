@@ -225,24 +225,20 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     MenuItem menuItem = (MenuItem) v.getTag();
                     if(quantity.getQuantity()!=0){
-                    OrderPayData o=new OrderPayData(true,"user",
-                            menuItem.getPrice(),menuItem.getName(),
-                            menuItem.getStall(),
-                            "Canteen "+menuItem.getCanteen(),
-                            quantity.getQuantity());
-                    Log.e("DATA", /*menuItem.getName()+*/" "+menuItem.getStall()+" "+menuItem.getPrice()+" "+quantity.getQuantity());
-                    MainActivity.orderPayRequests.add(o);
+                        OrderPayData o=new OrderPayData(true,"user",
+                                menuItem.getPrice(),menuItem.getName(),
+                                menuItem.getStall(),
+                                "Canteen "+menuItem.getCanteen(),
+                                quantity.getQuantity());
+                        Log.e("DATA", /*menuItem.getName()+*/" "+menuItem.getStall()+" "+menuItem.getPrice()+" "+quantity.getQuantity());
+                        MainActivity.orderPayRequests.add(o);
                         Toast.makeText(MainActivity.this, "Input to DB " + menuItem.getName() + " with quantity " + quantity.getQuantity(), Toast.LENGTH_SHORT).show();
                         quantity.setQuantity(0);
                     }
                     else
                     {
-                        Toast.makeText(MainActivity.this,"Look at the quantity la", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this,"Please input the quantity!", Toast.LENGTH_SHORT).show();
                     }
-
-                    //To Order Database input menu and qty
-
-
 
                 }
             });
