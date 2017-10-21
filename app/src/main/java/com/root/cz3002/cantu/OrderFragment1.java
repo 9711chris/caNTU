@@ -177,10 +177,11 @@ public class OrderFragment1 extends Fragment {
                                             dabaoDatabaseReference.child(key).setValue(orderDabaoRequest);
                                         }
                                     }
+
 //                                    dabaoDatabaseReference.push().setValue(new WaitingDabaoer());
 
                                     toPayAdapter.notifyDataSetChanged();
-                                    Toast.makeText(getContext(), "The delivery place has been recorded", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), "The dabao order has been saved", Toast.LENGTH_SHORT).show();
                                 }
                                 else{
                                     Toast.makeText(getContext(), "You have to add the delivery place", Toast.LENGTH_SHORT).show();
