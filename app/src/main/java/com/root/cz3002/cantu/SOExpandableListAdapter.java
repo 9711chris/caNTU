@@ -1,6 +1,7 @@
 package com.root.cz3002.cantu;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -125,10 +126,13 @@ public class SOExpandableListAdapter extends BaseExpandableListAdapter {
 //
                  //});
 
-                 _listDataChild.remove(_listDataHeader.get(groupPosition).getOrderSeq());
-                 _listDataHeader.remove(_listDataHeader.get(groupPosition));
+                 //_listDataChild.remove(_listDataHeader.get(groupPosition).getOrderSeq());
+                 //_listDataHeader.remove(_listDataHeader.get(groupPosition));
                  notifyDataSetChanged();
                  Toast.makeText(_context, "Deleted", Toast.LENGTH_SHORT).show();
+                 Intent intent = new Intent(_context, OwnerActivity.class);
+                 intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                 _context.startActivity(intent);
              }
          });
 

@@ -126,35 +126,35 @@ public class OwnerActivity extends AppCompatActivity {
         eventListener=new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                //refresh(null);
                 double sum;
                 int count=0;
 
                 Map<String, Object> dataSnapshotValue= (Map<String, Object>) dataSnapshot.getValue();
-                for(Map.Entry<String,Object> a:dataSnapshotValue.entrySet())
-                {   sum=0;
-                    String key="";
-                    ArrayList<SOChildData> childList=new ArrayList<SOChildData>();
-                    ArrayList<Map<String, Object>> d= (ArrayList) a.getValue();
-                    for(Map<String,Object> data: d) {
-                        double price = (double) data.get("price");
-                        String foodName = data.get("foodName").toString();
-                        long quantity = (long) data.get("qty");
-                        Log.e("Values", foodName + price +"  "+ quantity);
-                        key=(String)data.get("id");
-                        sum=sum + (price*quantity);
-                        SOChildData child=new SOChildData(foodName,quantity);
-                        childList.add(child);
+                if (dataSnapshotValue != null) {
+                    for (Map.Entry<String, Object> a : dataSnapshotValue.entrySet()) {
+                        sum = 0;
+                        String key = "";
+                        ArrayList<SOChildData> childList = new ArrayList<SOChildData>();
+                        ArrayList<Map<String, Object>> d = (ArrayList) a.getValue();
+                        for (Map<String, Object> data : d) {
+                            double price = (double) data.get("price");
+                            String foodName = data.get("foodName").toString();
+                            long quantity = (long) data.get("qty");
+                            Log.e("Values", foodName + price + "  " + quantity);
+                            key = (String) data.get("id");
+                            sum = sum + (price * quantity);
+                            SOChildData child = new SOChildData(foodName, quantity);
+                            childList.add(child);
+                        }
+                        Log.e("Price", String.valueOf(sum));
+                        SOHeaderData header = new SOHeaderData("order " + (++count), sum, key);
+                        Log.e("ID", count + " " + key);
+                        listDataHeader.add(header);
+                        //listDataChild.put(header)
+                        listDataChild.put(listDataHeader.get(count - 1).getOrderSeq(), childList);
+
                     }
-                    Log.e("Price", String.valueOf(sum));
-                    SOHeaderData header=new SOHeaderData("order "+ (++count),sum,key);
-                    Log.e("ID",count+" "+key);
-                    listDataHeader.add(header);
-                    //listDataChild.put(header)
-                    listDataChild.put(listDataHeader.get(count-1).getOrderSeq(),childList);
-
                 }
-
 
                     listAdapter.notifyDataSetChanged();
 
