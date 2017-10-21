@@ -3,6 +3,7 @@ package com.root.cz3002.cantu;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.root.cz3002.cantu.model.SOChildData;
 import com.root.cz3002.cantu.model.SOHeaderData;
 
@@ -24,6 +31,9 @@ import java.util.List;
 public class SOExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Context _context;
+    private FirebaseDatabase firebaseDatabase=FirebaseDatabase.getInstance();
+    private DatabaseReference orderDatabaseReference=firebaseDatabase.getReference().child("orders").child("Mini Wok");
+    private Query idQuery;
     private List<SOHeaderData> _listDataHeader; // header titles
     // child data in format of header title, child title
     private HashMap<String, List<SOChildData>> _listDataChild;
@@ -95,6 +105,26 @@ public class SOExpandableListAdapter extends BaseExpandableListAdapter {
              @Override
              public void onClick(View v) {
                  //TODO: DELETE FROM DATABASE
+
+                 orderDatabaseReference.child(_listDataHeader.get(groupPosition).getId()).setValue(null);
+                 //idQuery=orderDatabaseReference.orderByChild("id").equalTo(_listDataHeader.get(groupPosition).getId());
+                 //idQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+//                     @Override
+//                     public void onDataChange(DataSnapshot dataSnapshot) {
+//                         for(DataSnapshot data:dataSnapshot.getChildren())
+//                         {
+//                             Log.e("ref ",data.getRef().toString());
+//                             data.getRef().removeValue();
+//                         }
+//                     }
+//
+//                     @Override
+//                     public void onCancelled(DatabaseError databaseError) {
+//
+//                     }
+//
+                 //});
+
                  _listDataChild.remove(_listDataHeader.get(groupPosition).getOrderSeq());
                  _listDataHeader.remove(_listDataHeader.get(groupPosition));
                  notifyDataSetChanged();
