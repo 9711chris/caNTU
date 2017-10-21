@@ -24,7 +24,7 @@
             android:layout_centerVertical="true"
             android:layout_alignParentStart="true" />
 
-        <View
+        <!--<View
             android:id="@+id/refresh"
             android:tag="refresh"
             android:onClick="refresh"
@@ -34,7 +34,7 @@
             android:layout_marginTop="12dp"
             android:layout_marginLeft="200dp"
             android:layout_marginStart="180dp"
-            android:background="@drawable/refresh" />
+            android:background="@drawable/refresh" />-->
 
     </RelativeLayout>
     <ExpandableListView
