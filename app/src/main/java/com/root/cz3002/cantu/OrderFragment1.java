@@ -120,14 +120,20 @@ public class OrderFragment1 extends Fragment {
                 }
                 new AlertDialog.Builder(getContext())
                         .setTitle("Payment Confirmation")
+
                         .setMessage("Do you really want to buy all this order?\nTotal: "+totalPriceAll)
+
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                //TODO:send order to database
-                                String key= orderDatabaseReference.child(orderPayRequests.get(0).getStallName().toString()).push().getKey();
-                                keys.add(key);
+
+                               String key= orderDatabaseReference.child(orderPayRequests.get(0).getStallName().toString()).push().getKey();
+                                for(OrderPayData a:orderPayRequests)
+                                {
+                                    a.setId(key);
+                                }
+
                                 orderDatabaseReference.child(orderPayRequests.get(0).getStallName().toString()).child(key).setValue(orderPayRequests);
                                 Toast.makeText(getContext(), "Payment Confirmation Successfull", Toast.LENGTH_SHORT).show();
                             }})

@@ -6,6 +6,7 @@ package com.root.cz3002.cantu.model;
 
 public class OrderPayData {
     private boolean isChecked;
+    private String id;
     private double price;
     private String foodName;
     private String stallName;
@@ -15,9 +16,10 @@ public class OrderPayData {
     private double totalPrice;
     private String deliverTo; // asked when
 
-    public OrderPayData(boolean isChecked, String username, double price, String foodName, String stallName, String canteenName,  int qty){
+    public OrderPayData(boolean isChecked, String id, String username, double price, String foodName, String stallName, String canteenName,  int qty){
         this.isChecked = isChecked;
         this.price = price;
+        this.id = id;
         this.foodName = foodName;
         this.username = username;
         this.stallName = stallName;
@@ -30,6 +32,14 @@ public class OrderPayData {
     public OrderPayData()
     {
 
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getUsername() {
