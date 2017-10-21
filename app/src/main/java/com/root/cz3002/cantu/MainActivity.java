@@ -144,8 +144,13 @@ public class MainActivity extends AppCompatActivity {
         orderList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, OrderActivity.class);
-                startActivity(intent);
+                if(id==null){
+                    Toast.makeText(getApplicationContext(),"You have to login first",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Intent intent = new Intent(context, OrderActivity.class);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -155,8 +160,13 @@ public class MainActivity extends AppCompatActivity {
         dabaoer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, DabaoerActivity.class);
+                if(id==null){
+                    Toast.makeText(getApplicationContext(),"You have to login first",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Intent intent = new Intent(context, DabaoerActivity.class);
                     startActivity(intent);
+                }
             }
         });
 
@@ -166,8 +176,13 @@ public class MainActivity extends AppCompatActivity {
         creditCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, Credit.class);
-                startActivity(intent);
+                if(id==null){
+                    Toast.makeText(getApplicationContext(),"You have to login first",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Intent intent = new Intent(context, Credit.class);
+                    startActivity(intent);
+                }
             }
         });
 

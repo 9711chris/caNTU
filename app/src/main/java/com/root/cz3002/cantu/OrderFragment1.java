@@ -33,6 +33,7 @@ import java.util.Date;
 
 public class OrderFragment1 extends Fragment {
     ToPayAdapter toPayAdapter;
+    double totalPriceAll;
     boolean checkpoint;
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference orderDatabaseReference;
@@ -42,6 +43,7 @@ public class OrderFragment1 extends Fragment {
     public static ArrayList<String> keys=new ArrayList<String>();
     public static ArrayList<String> dabaokeys=new ArrayList<String>();
 //    private ValueEventListener orderValueEventListener;
+
     public OrderFragment1() {
         // Required empty public constructor
     }
@@ -49,6 +51,7 @@ public class OrderFragment1 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         firebaseDatabase=FirebaseDatabase.getInstance();
 
         orderDatabaseReference=firebaseDatabase.getReference().child("orders");
@@ -56,6 +59,7 @@ public class OrderFragment1 extends Fragment {
 
         final ArrayList<OrderPayData> orderPayRequests = MainActivity.orderPayRequests;
         final ArrayList<WaitingDabaoer> orderDabaoRequest = new ArrayList<WaitingDabaoer>();
+
 
         //TODO: orderPayRequests is an ArrayList<OrderPayData> that will get the data from database
         toPayAdapter = new ToPayAdapter(getActivity(), orderPayRequests);
@@ -94,7 +98,6 @@ public class OrderFragment1 extends Fragment {
                 for(int i=0; i<toPayAdapter.getCount(); i++){
                     if(toPayAdapter.getItem(i).getIsChecked()){
                         //TODO: delete from database
-                        orderPayRequests.remove(i);
                         checkpoint = true;
                     }
                 }
@@ -111,26 +114,32 @@ public class OrderFragment1 extends Fragment {
         pay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                totalPriceAll = 0;
+                for(int i =0; i<toPayAdapter.getCount(); i++){
+                    totalPriceAll += toPayAdapter.getItem(i).getTotalPrice();
+                }
                 new AlertDialog.Builder(getContext())
                         .setTitle("Payment Confirmation")
-                        .setMessage("Do you really want to make this order?")
+
+                        .setMessage("Do you really want to buy all this order?\nTotal: "+totalPriceAll)
+
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog, int whichButton) {
+
                                String key= orderDatabaseReference.child(orderPayRequests.get(0).getStallName().toString()).push().getKey();
                                 for(OrderPayData a:orderPayRequests)
                                 {
                                     a.setId(key);
                                 }
+
                                 orderDatabaseReference.child(orderPayRequests.get(0).getStallName().toString()).child(key).setValue(orderPayRequests);
-                                //TODO:send order to database
                                 Toast.makeText(getContext(), "Payment Confirmation Successfull", Toast.LENGTH_SHORT).show();
                             }})
                         .setNegativeButton(android.R.string.no, null).show();
             }
         });
-
 
         Button payDabao = (Button) rootView.findViewById(R.id.pay_dabao);
         payDabao.setOnClickListener(new View.OnClickListener() {
@@ -154,29 +163,27 @@ public class OrderFragment1 extends Fragment {
                                             toPayAdapter.getItem(i).setDeliverTo(placeDeliver);
                                         }
                                     }
-
                                     //TODO: update database send order to waiting tab
                                     String key=dabaoDatabaseReference.push().getKey();
 
-                                    for (OrderPayData d:orderPayRequests)
-                                    {
-                                        DateFormat D=new SimpleDateFormat("dd/MM/yy hh:mm:ss");
-                                        Date date = new Date();
-                                        WaitingDabaoer wd=new WaitingDabaoer();
-                                        wd.setCanteenName(d.getCanteenName());
-                                        wd.setFoodName(d.getFoodName());
-                                        wd.setStatus(d.getStallName());
-                                        wd.setDeliveryTo(placeDeliver);
-                                        wd.setStatus("searching");
-                                        wd.setTimestamp(D.format(date));
-                                        orderDabaoRequest.add(wd);
-                                        wd.setId(key);
-                                        dabaokeys.add(key);
-                                        dabaoDatabaseReference.child(key).setValue(orderDabaoRequest);
+                                    for(int j=0; j<toPayAdapter.getCount();j++){
+                                        if(toPayAdapter.getItem(j).getIsChecked()){
+                                            DateFormat D=new SimpleDateFormat("dd/MM/yy hh:mm:ss");
+                                            Date date = new Date();
+                                            WaitingDabaoer wd=new WaitingDabaoer();
+                                            wd.setCanteenName(toPayAdapter.getItem(j).getCanteenName());
+                                            wd.setFoodName(toPayAdapter.getItem(j).getFoodName());
+                                            wd.setStatus(toPayAdapter.getItem(j).getStallName());
+                                            wd.setDeliveryTo(placeDeliver);
+                                            wd.setStatus("searching");
+                                            wd.setTimestamp(D.format(date));
+                                            orderDabaoRequest.add(wd);
+                                            wd.setId(key);
+                                            dabaokeys.add(key);
+                                            dabaoDatabaseReference.child(key).setValue(orderDabaoRequest);
+                                        }
                                     }
-
 //                                    dabaoDatabaseReference.push().setValue(new WaitingDabaoer());
-
 
                                     toPayAdapter.notifyDataSetChanged();
                                     Toast.makeText(getContext(), "The delivery place has been recorded", Toast.LENGTH_SHORT).show();
@@ -193,6 +200,7 @@ public class OrderFragment1 extends Fragment {
                                 dialog.cancel();
                             }
                         });
+
                 alertDialog.show();
             }
         });
