@@ -116,7 +116,9 @@ public class OrderFragment1 extends Fragment {
             public void onClick(View v) {
                 totalPriceAll = 0;
                 for(int i =0; i<toPayAdapter.getCount(); i++){
-                    totalPriceAll += toPayAdapter.getItem(i).getTotalPrice();
+                    if(toPayAdapter.getItem(i).getIsChecked()) {
+                        totalPriceAll += toPayAdapter.getItem(i).getTotalPrice();
+                    }
                 }
                 new AlertDialog.Builder(getContext())
                         .setTitle("Payment Confirmation")
@@ -166,8 +168,12 @@ public class OrderFragment1 extends Fragment {
                                     //TODO: update database send order to waiting tab
                                     String key=dabaoDatabaseReference.push().getKey();
 
-                                    for(int j=0; j<toPayAdapter.getCount();j++){
+                                    int count = toPayAdapter.getCount();
+                                    for(int j=0; j<count;j++){
+                                        System.out.println("==count"+toPayAdapter.getCount());
+                                        System.out.println("=="+j+toPayAdapter.getItem(j).getIsChecked());
                                         if(toPayAdapter.getItem(j).getIsChecked()){
+                                            System.out.println("====removenn"+ j);
                                             DateFormat D=new SimpleDateFormat("dd/MM/yy hh:mm:ss");
                                             Date date = new Date();
                                             WaitingDabaoer wd=new WaitingDabaoer();
@@ -181,6 +187,8 @@ public class OrderFragment1 extends Fragment {
                                             wd.setId(key);
                                             dabaokeys.add(key);
                                             dabaoDatabaseReference.child(key).setValue(orderDabaoRequest);
+                                            toPayAdapter.remove(orderPayRequests.get(j));
+                                            System.out.println("====remove"+ j);
                                         }
                                     }
 

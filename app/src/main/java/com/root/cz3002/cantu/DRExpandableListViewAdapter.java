@@ -9,7 +9,6 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import com.root.cz3002.cantu.model.DRChildData;
-import com.root.cz3002.cantu.model.SOChildData;
 
 import java.util.List;
 
@@ -23,6 +22,13 @@ public class DRExpandableListViewAdapter extends BaseExpandableListAdapter {
     private String  _listDataHeader; // header titles
     // child data in format of header title, child title
     private  List<DRChildData> _listDataChild;
+
+    public DRExpandableListViewAdapter(Context context, String listDataHeader,
+                                 List<DRChildData> listChildData) {
+        this._context = context;
+        this._listDataHeader = listDataHeader;
+        this._listDataChild = listChildData;
+    }
 
     @Override
     public int getGroupCount() {
@@ -80,7 +86,7 @@ public class DRExpandableListViewAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        final SOChildData childObj = (SOChildData) getChild(groupPosition, childPosition);
+        final DRChildData childObj = (DRChildData) getChild(groupPosition, childPosition);
 
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context

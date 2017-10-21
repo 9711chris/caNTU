@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
 
+import com.root.cz3002.cantu.model.DRChildData;
 import com.root.cz3002.cantu.model.DabaoRequest;
 
 import java.util.ArrayList;
@@ -21,9 +22,9 @@ public class DabaoerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_view_from_button);
 
-        Map<String,Integer> m =  new HashMap<String,Integer>();
-        m.put("fish soup", 1);
-        m.put("wanton noodle",1);
+       ArrayList<DRChildData> m = new ArrayList<DRChildData>();
+        m.add(new DRChildData("Pasta",2));
+        m.add(new DRChildData("Fish bread crumb set",1));
 
         ArrayList<DabaoRequest> dabaoRequests = new ArrayList<DabaoRequest>();
         dabaoRequests.add(new DabaoRequest(1, "gg", "can1", "yong tau foo", m, "PENDING", "hall10"));

@@ -6,11 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 
+import com.root.cz3002.cantu.model.DRChildData;
 import com.root.cz3002.cantu.model.DabaoRequest;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by brigi on 10/10/2017.
@@ -18,6 +21,10 @@ import java.util.ArrayList;
 
 public class DabaoRequestAdapter extends ArrayAdapter<DabaoRequest> {
     private static final String LOG_TAG = DabaoRequestAdapter.class.getSimpleName();
+    private DRExpandableListViewAdapter listAdapter;
+    private ExpandableListView expListView;
+    private String listDataHeader;
+    private List<DRChildData> listDataChild;
 
     public DabaoRequestAdapter(Activity context, ArrayList<DabaoRequest> dabaoRequests){
         // Here, we initialize the ArrayAdapter's internal storage for the context and the list.
@@ -36,6 +43,7 @@ public class DabaoRequestAdapter extends ArrayAdapter<DabaoRequest> {
                     R.layout.dabao_request_item, parent, false);
         }
 
+
         // Get the {@link AndroidFlavor} object located at this position in the list
         DabaoRequest currentDabaoRequest = getItem(position);
 
@@ -51,6 +59,17 @@ public class DabaoRequestAdapter extends ArrayAdapter<DabaoRequest> {
         TextView tv3 = (TextView) listItemView.findViewById(R.id.place_deliver);
         tv3.setText(currentDabaoRequest.getStallName());
 
+        // get the listview
+        expListView = (ExpandableListView) listItemView.findViewById(R.id.list_food);
+
+        // preparing list data
+        prepareListData(currentDabaoRequest);
+
+        listAdapter = new DRExpandableListViewAdapter(getContext(), listDataHeader, listDataChild);
+
+        // setting list adapter
+        expListView.setAdapter(listAdapter);
+
         Button b1 = (Button) listItemView.findViewById(R.id.acc);
         b1.setText("Accept Order");
         //b1.setOnClickListener(); implement to send data to database.
@@ -58,5 +77,10 @@ public class DabaoRequestAdapter extends ArrayAdapter<DabaoRequest> {
         // Return the whole list item layout (containing 2 TextViews and an ImageView)
         // so that it can be shown in the ListView
         return listItemView;
+    }
+
+    private void prepareListData(DabaoRequest dabaoRequest) {
+        listDataHeader = "List of food";
+        listDataChild = dabaoRequest.getFood_qty();
     }
 }
