@@ -5,7 +5,7 @@ package com.root.cz3002.cantu.model;
  */
 
 public class WaitingDabaoer {
-    private int id;
+    private String id;
     private String canteenName;
     private String stallName;
     private String deliveryTo;
@@ -13,7 +13,9 @@ public class WaitingDabaoer {
     private String timestamp;
     private String foodName;
 
-    public WaitingDabaoer(int id, String foodName, String canteenName, String stallName, String deliveryTo, String status,String timestamp){
+    public WaitingDabaoer()
+    {}
+    public WaitingDabaoer(String id, String foodName, String canteenName, String stallName, String deliveryTo, String status,String timestamp){
         this.id= id;
         this.foodName = foodName;
         this.canteenName = canteenName;
@@ -23,7 +25,35 @@ public class WaitingDabaoer {
         this.timestamp = timestamp;
     }
 
-    public int getId(){return id;}
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setCanteenName(String canteenName) {
+        this.canteenName = canteenName;
+    }
+
+    public void setStallName(String stallName) {
+        this.stallName = stallName;
+    }
+
+    public void setDeliveryTo(String deliveryTo) {
+        this.deliveryTo = deliveryTo;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public void setFoodName(String foodName) {
+        this.foodName = foodName;
+    }
+
+    public String getId(){return id;}
     public String getFoodName(){return foodName;}
     public String getCanteenName(){return canteenName;}
     public String getStallName(){return stallName;}
