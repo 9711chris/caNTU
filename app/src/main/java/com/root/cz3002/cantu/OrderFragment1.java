@@ -61,7 +61,7 @@ public class OrderFragment1 extends Fragment {
         final ArrayList<WaitingDabaoer> orderDabaoRequest = new ArrayList<WaitingDabaoer>();
 
 
-        //TODO: orderPayRequests is an ArrayList<OrderPayData> that will get the data from database
+        //orderPayRequests is an ArrayList<OrderPayData> that will get the data from database
         toPayAdapter = new ToPayAdapter(getActivity(), orderPayRequests);
 
         View rootView = inflater.inflate(R.layout.order_fragment1, container, false);
@@ -98,9 +98,12 @@ public class OrderFragment1 extends Fragment {
                 for(int i=0; i<toPayAdapter.getCount(); i++){
                     if(toPayAdapter.getItem(i).getIsChecked()){
                         //TODO: delete from database
+                        toPayAdapter.remove(orderPayRequests.get(i));
                         checkpoint = true;
+                        i--;
                     }
                 }
+                toPayAdapter.notifyDataSetChanged();
                 if(checkpoint) {
                     Toast.makeText(getContext(), "The order has been deleted", Toast.LENGTH_SHORT).show();
                 }
@@ -165,15 +168,10 @@ public class OrderFragment1 extends Fragment {
                                             toPayAdapter.getItem(i).setDeliverTo(placeDeliver);
                                         }
                                     }
-                                    //TODO: update database send order to waiting tab
+                                    //update database send order to waiting tab
                                     String key=dabaoDatabaseReference.push().getKey();
-
-                                    int count = toPayAdapter.getCount();
-                                    for(int j=0; j<count;j++){
-                                        System.out.println("==count"+toPayAdapter.getCount());
-                                        System.out.println("=="+j+toPayAdapter.getItem(j).getIsChecked());
+                                    for(int j=0; j<toPayAdapter.getCount();j++){
                                         if(toPayAdapter.getItem(j).getIsChecked()){
-                                            System.out.println("====removenn"+ j);
                                             DateFormat D=new SimpleDateFormat("dd/MM/yy hh:mm:ss");
                                             Date date = new Date();
                                             WaitingDabaoer wd=new WaitingDabaoer();
@@ -188,7 +186,7 @@ public class OrderFragment1 extends Fragment {
                                             dabaokeys.add(key);
                                             dabaoDatabaseReference.child(key).setValue(orderDabaoRequest);
                                             toPayAdapter.remove(orderPayRequests.get(j));
-                                            System.out.println("====remove"+ j);
+                                            j--;
                                         }
                                     }
 
