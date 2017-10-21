@@ -99,7 +99,7 @@ public class OrderFragment3 extends Fragment {
         dabaoValueEventListener=new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                waitingRequests.clear();
+               //waitingRequests.clear();
                 Map<String, ArrayList<Map>> ordersdabao= (Map<String, ArrayList<Map>>) dataSnapshot.getValue();
                 if(ordersdabao!=null){
                 Log.e("orderdabao", ordersdabao.keySet().toString());
