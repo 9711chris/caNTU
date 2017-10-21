@@ -119,6 +119,10 @@ public class OrderFragment1 extends Fragment {
 
                             public void onClick(DialogInterface dialog, int whichButton) {
                                String key= orderDatabaseReference.child(orderPayRequests.get(0).getStallName().toString()).push().getKey();
+                                for(OrderPayData a:orderPayRequests)
+                                {
+                                    a.setId(key);
+                                }
                                 orderDatabaseReference.child(orderPayRequests.get(0).getStallName().toString()).child(key).setValue(orderPayRequests);
                                 //TODO:send order to database
                                 Toast.makeText(getContext(), "Payment Confirmation Successfull", Toast.LENGTH_SHORT).show();

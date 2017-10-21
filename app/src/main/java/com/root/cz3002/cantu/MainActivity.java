@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     MenuItem menuItem = (MenuItem) v.getTag();
                     if(quantity.getQuantity()!=0){
-                        OrderPayData o=new OrderPayData(true,"user",
+                        OrderPayData o=new OrderPayData(true,"","user",
                                 menuItem.getPrice(),menuItem.getName(),
                                 menuItem.getStall(),
                                 "Canteen "+menuItem.getCanteen(),
