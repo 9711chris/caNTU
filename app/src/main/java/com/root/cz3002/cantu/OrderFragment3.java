@@ -104,24 +104,26 @@ public class OrderFragment3 extends Fragment {
                 Map<String, ArrayList<Map>> ordersdabao= (Map<String, ArrayList<Map>>) dataSnapshot.getValue();
                 if(ordersdabao!=null){
                 Log.e("orderdabao", ordersdabao.keySet().toString());
-                for(String s:ordersdabao.keySet())
-                {
-                    ArrayList<Map> data=ordersdabao.get(s);
-                    for(Map a:data)
-                    {
-                        Log.e("a", a.toString());
-                        WaitingDabaoer wd= new WaitingDabaoer();
-                        wd.setStatus(a.get("status").toString());
-                        wd.setId(a.get("id").toString());
-                        wd.setFoodName(a.get("foodName").toString());
-                        wd.setCanteenName(a.get("canteenName").toString());
-                        wd.setTimestamp(a.get("timestamp").toString());
-                        wd.setDeliveryTo(a.get("deliveryTo").toString());
-                        waitingRequests.add(wd);
+                for(String s:ordersdabao.keySet()) {
+                    ArrayList<Map> data = ordersdabao.get(s);
+//                    Toast.makeText(getContext(),data.toString(),Toast.LENGTH_SHORT).show();
+                    if (data != null) {
+                        for (Map a : data) {
+                            //Log.e("a", a.toString());
+                            if(a!=null){
+                            WaitingDabaoer wd = new WaitingDabaoer();
+                            wd.setStatus(a.get("status").toString());
+                            wd.setId(a.get("id").toString());
+                            wd.setFoodName(a.get("foodName").toString());
+                            wd.setCanteenName(a.get("canteenName").toString());
+                            wd.setTimestamp(a.get("timestamp").toString());
+                            wd.setDeliveryTo(a.get("deliveryTo").toString());
+                            waitingRequests.add(wd);
+                        }
+                        }
+                        //Log.e("dtaa", data.keySet().toString());
                     }
-                    //Log.e("dtaa", data.keySet().toString());
                 }
-
             }else{
                     Toast.makeText(getContext(), "Oops no data", Toast.LENGTH_SHORT).show();
                 }

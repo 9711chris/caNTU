@@ -12,11 +12,11 @@ public class OrderPayData {
     private String stallName;
     private String canteenName;
     private String username;
-    private int qty;
+    private long qty;
     private double totalPrice;
     private String deliverTo; // asked when
 
-    public OrderPayData(boolean isChecked, String id, String username, double price, String foodName, String stallName, String canteenName,  int qty){
+    public OrderPayData(boolean isChecked, String id, String username, double price, String foodName, String stallName, String canteenName,  long qty){
         this.isChecked = isChecked;
         this.price = price;
         this.id = id;
@@ -58,7 +58,7 @@ public class OrderPayData {
     public String getFoodName(){return foodName;}
     public String getStallName(){return stallName;}
     public String getCanteenName(){return canteenName;}
-    public int getQty(){return qty;}
+    public long getQty(){return qty;}
     public double getTotalPrice(){return totalPrice;}
     public String getDeliverTo(){return deliverTo;}
 

@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String MENU ="menu" ;
     public static ArrayList<OrderPayData> orderPayRequests=new ArrayList<OrderPayData>();
     private static String STALL="stall";
-    private static String id;
+    public static String id;
     private String mode;
     private LinearLayout list;
     private RelativeLayout bottomBar;
