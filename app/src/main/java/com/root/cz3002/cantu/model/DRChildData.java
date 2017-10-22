@@ -6,21 +6,21 @@ package com.root.cz3002.cantu.model;
 
 public class DRChildData {
     private String foodName;
-    private int qty;
+    private long qty;
 
-    public DRChildData(String foodName, int qty){
+    public DRChildData(String foodName, long qty){
         this.foodName = foodName;
         this.qty = qty;
     }
 
     public String getFoodName(){return foodName;}
-    public int getQty(){return qty;}
+    public long getQty(){return qty;}
 
     public void setFoodName(String foodName){
         this.foodName = foodName;
     }
 
-    public void setQty(int qty){
+    public void setQty(long qty){
         this.qty = qty;
     }
 }

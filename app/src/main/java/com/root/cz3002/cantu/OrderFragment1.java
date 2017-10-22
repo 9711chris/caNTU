@@ -180,9 +180,11 @@ public class OrderFragment1 extends Fragment {
                                             WaitingDabaoer wd=new WaitingDabaoer();
                                             wd.setCanteenName(toPayAdapter.getItem(j).getCanteenName());
                                             wd.setFoodName(toPayAdapter.getItem(j).getFoodName());
-                                            wd.setStatus(toPayAdapter.getItem(j).getStallName());
+                                            wd.setStallName(toPayAdapter.getItem(j).getStallName());
+                                            wd.setUser(MainActivity.id);
                                             wd.setDeliveryTo(placeDeliver);
-                                            wd.setStatus("searching");
+                                            wd.setQty(toPayAdapter.getItem(j).getQty()); //Added quantity. Changed to int!
+                                            wd.setStatus("SEARCHING");
                                             wd.setTimestamp(D.format(date));
                                             orderDabaoRequest.add(wd);
                                             wd.setId(key);

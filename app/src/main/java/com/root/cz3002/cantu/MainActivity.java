@@ -5,12 +5,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.renderscript.Sampler;
+import android.os.Bundle;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,24 +20,22 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ListView;
 
 import com.google.firebase.database.ChildEventListener;
-import com.root.cz3002.cantu.model.MenuItem;
-import com.root.cz3002.cantu.model.OrderPayData;
-import com.root.cz3002.cantu.model.Review;
-import com.root.cz3002.cantu.model.Stall;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
+import com.root.cz3002.cantu.model.MenuItem;
+import com.root.cz3002.cantu.model.OrderPayData;
+import com.root.cz3002.cantu.model.Review;
+import com.root.cz3002.cantu.model.Stall;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -51,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String MENU ="menu" ;
     public static ArrayList<OrderPayData> orderPayRequests=new ArrayList<OrderPayData>();
     private static String STALL="stall";
-    private static String id;
+    public static String id;
     private String mode;
     private LinearLayout list;
     private RelativeLayout bottomBar;
@@ -97,7 +94,6 @@ public class MainActivity extends AppCompatActivity {
         }
         if (intent.hasExtra("ID")) {
             MainActivity.id = bundleOld.getString("ID");
-            Log.e("ID", "I'm working bro");
             Toast.makeText(MainActivity.this,"I am "+id, Toast.LENGTH_LONG).show();
         }
 
@@ -250,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
                                 menuItem.getStall(),
                                 "Canteen "+menuItem.getCanteen(),
                                 quantity.getQuantity());
-                        Log.e("DATA", /*menuItem.getName()+*/" "+menuItem.getStall()+" "+menuItem.getPrice()+" "+quantity.getQuantity());
+                        //Log.e("DATA", /*menuItem.getName()+*/" "+menuItem.getStall()+" "+menuItem.getPrice()+" "+quantity.getQuantity());
                         MainActivity.orderPayRequests.add(o);
                         Toast.makeText(MainActivity.this, "Input to DB " + menuItem.getName() + " with quantity " + quantity.getQuantity(), Toast.LENGTH_SHORT).show();
                         quantity.setQuantity(0);
@@ -270,7 +266,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void populateList(View v) {
-        Log.e("Running populate","Running");
         list.removeAllViews();
         if(bottomBar!=null){
             bottomBar.removeAllViews();
@@ -283,12 +278,10 @@ public class MainActivity extends AppCompatActivity {
         if(mode.equals("canteen")) {
 
             canteenDatabaseReference = firebaseDatabase.getReference().child("canteen").child(category.toString()).child("stalls");
-            Log.e("yoyo ", canteenDatabaseReference.getRoot().toString());
             canteenValueEventListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     list.removeAllViews();
-                    Log.e("Running Running", "Running");
                     Map<String, Object> data = (Map<String, Object>) dataSnapshot.getValue();
                     addDataToList(data,STALL);
                 }
@@ -483,71 +476,6 @@ public class MainActivity extends AppCompatActivity {
         //inside loop of DB
         //compare the stall.getName() in DB;
         //get numOfReviews;
-
-//        reviewChildEventListener= new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-//                Map<String, Object> ids= (Map<String, Object>) dataSnapshot.getValue();
-//                Log.e("Children count", ids.toString());
-//                for(Map.Entry<String,Object> data:ids.entrySet())
-//                {
-//                    Review review=new Review();
-//
-//                    Map<String, Object> d= (Map<String, Object>) data.getValue();
-//                    for(Map.Entry<String,Object> fin:d.entrySet())
-//                    {
-//                        //Toast.makeText(MainActivity.this,"Inside for",Toast.LENGTH_SHORT).show();
-//
-//                        if(fin.getKey().toString().equals("id"))
-//                        {
-//                            review.setId(fin.getValue().toString());
-//                        }
-//                        if(fin.getKey().toString().equals("stallName"))
-//                        {
-//                            review.setStallName(fin.getValue().toString());
-//                        }
-//                        if(fin.getKey().toString().equals("comment"))
-//                        {
-//                            review.setComment(fin.getValue().toString());
-//                        }
-//                        if(fin.getKey().toString().equals("userName"))
-//                        {
-//                            review.setUserName(fin.getValue().toString());
-//                        }
-//                        if(fin.getKey().toString().equals("rating"))
-//                        {
-//                            review.setRating(Double.parseDouble(String.valueOf(fin.getValue())));
-//                        }
-//                        if(fin.getKey().toString().equals("dateTime"))
-//                        {
-//                            review.setDateTime(fin.getValue().toString());
-//                        }
-//
-//                    }
-//                    reviews.add(review);
-//
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-//            }
-//
-//            @Override
-//            public void onChildRemoved(DataSnapshot dataSnapshot) {
-//            }
-//
-//            @Override
-//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//            }
-//        };
-//        reviewDatabaseReference.addChildEventListener(reviewChildEventListener);
-
 
         Review review1 = new Review("1", stall.getName(),"shelina","Very delicious!", "11-08-2017 17:05", 4);
         Review review2 = new Review("2", stall.getName(),"lusandro","Urgh bad taste!", "11-08-2017 16:00", 2);
