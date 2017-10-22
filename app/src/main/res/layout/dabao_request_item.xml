@@ -11,24 +11,31 @@
         android:layout_marginLeft="10dp"/>
     <TextView
         android:id="@+id/stall_name"
-        android:layout_width="150dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/canteen_name"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="10dp"/>
     <TextView
         android:id="@+id/place_deliver"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/stall_name"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"/>
+    <ExpandableListView
+        android:id="@+id/list_food"
+        android:layout_below="@id/place_deliver"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="5dp"/>
+    <Button
+        android:id="@+id/acc"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="5dp"
-        android:layout_marginRight="10dp"/>
-    <Button
-        android:id="@+id/acc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/place_deliver"
         android:layout_marginTop="5dp"
         android:layout_marginRight="10dp"/>
 </RelativeLayout>

@@ -9,14 +9,16 @@ import java.util.Date;
 
 public class Review {
 
-    private int id;
+    private String id;
     private String stallName;
     private String userName;
     private String comment;
     private String dateTime;
-    private float rating;
+    private double rating;
 
-    public Review (int id, String stallName, String userName, String comment, String dateTime, float rating){
+    public Review()
+    {}
+    public Review (String id, String stallName, String userName, String comment, String dateTime, double rating){
         this.id = id;
         this.stallName = stallName;
         this.userName = userName;
@@ -25,7 +27,7 @@ public class Review {
         this.rating = rating;
     }
 
-    public int getId(){
+    public String getId(){
         return id;
     }
     public String getStallName(){
@@ -40,15 +42,15 @@ public class Review {
     public String getDateTime(){
         return dateTime;
     }
-    public float getRating(){
+    public double getRating(){
         return rating;
     }
 
-    public void setId(int id){ this.id = id;}
+    public void setId(String id){ this.id = id;}
     public void setStallName(String stallName){ this.stallName = stallName;}
     public void setUserName(String userName){ this.userName = userName; }
     public void setComment(String comment){ this.comment = comment; }
     public void setDateTime(String dateTime){ this.dateTime = dateTime; }
-    public void setRating(float rating){ this.rating = rating; }
+    public void setRating(double rating){ this.rating = rating; }
 
 }
