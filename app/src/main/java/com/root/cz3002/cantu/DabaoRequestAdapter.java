@@ -57,7 +57,7 @@ public class DabaoRequestAdapter extends ArrayAdapter<DabaoRequest> {
 
         // Find the TextView in the dabao_request_item.xml layout with the ID place_deliver
         TextView tv3 = (TextView) listItemView.findViewById(R.id.place_deliver);
-        tv3.setText(currentDabaoRequest.getStallName());
+        tv3.setText(currentDabaoRequest.getPlaceDeliver());
 
         // get the listview
         expListView = (ExpandableListView) listItemView.findViewById(R.id.list_food);
