@@ -11,6 +11,7 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -38,9 +39,11 @@ import com.root.cz3002.cantu.model.Review;
 import com.root.cz3002.cantu.model.Stall;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
+import java.util.TimeZone;
 
 import me.himanshusoni.quantityview.QuantityView;
 
@@ -554,8 +557,9 @@ public class MainActivity extends AppCompatActivity {
                         double rating = ratingBar.getRating();
 
                         //Toast.makeText(MainActivity.this, "Rating: "+rating+" and Comment: "+comment, Toast.LENGTH_SHORT).show();
-
-                        String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
+                        DateFormat dt=new SimpleDateFormat();
+                        dt.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
+                        String currentDateTimeString = dt.format(new Date());
                         Review review=new Review();
                         String key=reviewDatabaseReference.push().getKey();
                         review.setComment(comment);
