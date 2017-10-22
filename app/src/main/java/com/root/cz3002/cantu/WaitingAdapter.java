@@ -19,16 +19,19 @@ import java.util.ArrayList;
 public class WaitingAdapter extends ArrayAdapter<WaitingDabaoer> {
     private static final String LOG_TAG = WaitingAdapter.class.getSimpleName();
 
+    ArrayList<WaitingDabaoer> waitingList;
+
     public WaitingAdapter(Activity context, ArrayList<WaitingDabaoer> waitingRequests){
         // Here, we initialize the ArrayAdapter's internal storage for the context and the list.
         // the second argument is used when the ArrayAdapter is populating a single TextView.
         // Because this is a custom adapter for two TextViews and an ImageView, the adapter is not
         // going to use this second argument, so it can be any value. Here, we used 0.
         super(context, 0, waitingRequests);
+        this.waitingList = waitingRequests;
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         // Check if the existing view is being reused, otherwise inflate the view
         View listItemView = convertView;
         if (listItemView == null) {
@@ -65,6 +68,14 @@ public class WaitingAdapter extends ArrayAdapter<WaitingDabaoer> {
 
         Button b1 = (Button) listItemView.findViewById(R.id.cancel);
         //TODO: b1 setOnClickListener to update database data -- delete the particular tuples.
+        b1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //System.out.println("go in here");
+                waitingList.remove(position);
+                notifyDataSetChanged();
+            }
+        });
 
         return listItemView;
     }
