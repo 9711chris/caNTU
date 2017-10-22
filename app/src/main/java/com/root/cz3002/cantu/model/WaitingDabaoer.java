@@ -10,6 +10,7 @@ public class WaitingDabaoer {
     private String stallName;
     private String deliveryTo;
     private String status;
+    private long qty;
     private String timestamp;
     private String foodName;
 
@@ -23,6 +24,14 @@ public class WaitingDabaoer {
         this.deliveryTo = deliveryTo;
         this.status = status;
         this.timestamp = timestamp;
+    }
+
+    public long getQty() {
+        return qty;
+    }
+
+    public void setQty(long qty) {
+        this.qty = qty;
     }
 
     public void setId(String id) {

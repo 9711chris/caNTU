@@ -26,6 +26,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Created by brigi on 12/10/2017.
@@ -172,7 +173,9 @@ public class OrderFragment1 extends Fragment {
                                     String key=dabaoDatabaseReference.push().getKey();
                                     for(int j=0; j<toPayAdapter.getCount();j++){
                                         if(toPayAdapter.getItem(j).getIsChecked()){
+                                            //TimeZone.getAvailableIDs()
                                             DateFormat D=new SimpleDateFormat("dd/MM/yy hh:mm:ss");
+                                            D.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
                                             Date date = new Date();
                                             WaitingDabaoer wd=new WaitingDabaoer();
                                             wd.setCanteenName(toPayAdapter.getItem(j).getCanteenName());

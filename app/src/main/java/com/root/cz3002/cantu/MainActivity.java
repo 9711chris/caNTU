@@ -244,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     MenuItem menuItem = (MenuItem) v.getTag();
-                    if(quantity.getQuantity()!=0){
+                    if(quantity.getQuantity()!=0 && MainActivity.id!=null){
                         OrderPayData o=new OrderPayData(true,"","user",
                                 menuItem.getPrice(),menuItem.getName(),
                                 menuItem.getStall(),
