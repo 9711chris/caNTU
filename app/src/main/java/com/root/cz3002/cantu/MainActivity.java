@@ -5,13 +5,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.renderscript.Sampler;
+import android.os.Bundle;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -21,24 +21,22 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ListView;
 
 import com.google.firebase.database.ChildEventListener;
-import com.root.cz3002.cantu.model.MenuItem;
-import com.root.cz3002.cantu.model.OrderPayData;
-import com.root.cz3002.cantu.model.Review;
-import com.root.cz3002.cantu.model.Stall;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
+import com.root.cz3002.cantu.model.MenuItem;
+import com.root.cz3002.cantu.model.OrderPayData;
+import com.root.cz3002.cantu.model.Review;
+import com.root.cz3002.cantu.model.Stall;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -46,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
+import java.util.TimeZone;
 
 import me.himanshusoni.quantityview.QuantityView;
 
@@ -53,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String MENU ="menu" ;
     public static ArrayList<OrderPayData> orderPayRequests=new ArrayList<OrderPayData>();
     private static String STALL="stall";
-    private static String id;
+    public static String id;
     private String mode;
     private LinearLayout list;
     private RelativeLayout bottomBar;
@@ -101,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
         }
         if (intent.hasExtra("ID")) {
             MainActivity.id = bundleOld.getString("ID");
-            Log.e("ID", "I'm working bro");
             Toast.makeText(MainActivity.this,"I am "+id, Toast.LENGTH_LONG).show();
         }
 
@@ -244,13 +242,13 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     MenuItem menuItem = (MenuItem) v.getTag();
-                    if(quantity.getQuantity()!=0){
+                    if(quantity.getQuantity()!=0 && MainActivity.id!=null){
                         OrderPayData o=new OrderPayData(true,"","user",
                                 menuItem.getPrice(),menuItem.getName(),
                                 menuItem.getStall(),
                                 "Canteen "+menuItem.getCanteen(),
                                 quantity.getQuantity());
-                        Log.e("DATA", /*menuItem.getName()+*/" "+menuItem.getStall()+" "+menuItem.getPrice()+" "+quantity.getQuantity());
+                        //Log.e("DATA", /*menuItem.getName()+*/" "+menuItem.getStall()+" "+menuItem.getPrice()+" "+quantity.getQuantity());
                         MainActivity.orderPayRequests.add(o);
                         Toast.makeText(MainActivity.this, "Input to DB " + menuItem.getName() + " with quantity " + quantity.getQuantity(), Toast.LENGTH_SHORT).show();
                         quantity.setQuantity(0);
@@ -270,7 +268,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void populateList(View v) {
-        Log.e("Running populate","Running");
         list.removeAllViews();
         if(bottomBar!=null){
             bottomBar.removeAllViews();
@@ -283,12 +280,10 @@ public class MainActivity extends AppCompatActivity {
         if(mode.equals("canteen")) {
 
             canteenDatabaseReference = firebaseDatabase.getReference().child("canteen").child(category.toString()).child("stalls");
-            Log.e("yoyo ", canteenDatabaseReference.getRoot().toString());
             canteenValueEventListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     list.removeAllViews();
-                    Log.e("Running Running", "Running");
                     Map<String, Object> data = (Map<String, Object>) dataSnapshot.getValue();
                     addDataToList(data,STALL);
                 }

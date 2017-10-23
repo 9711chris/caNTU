@@ -10,12 +10,15 @@ public class WaitingDabaoer {
     private String stallName;
     private String deliveryTo;
     private String status;
+    private long qty;
+    private String user;
     private String timestamp;
     private String foodName;
 
     public WaitingDabaoer()
     {}
-    public WaitingDabaoer(String id, String foodName, String canteenName, String stallName, String deliveryTo, String status,String timestamp){
+
+    public WaitingDabaoer(String id, String foodName, String canteenName, String stallName, String deliveryTo, String status,String timestamp, String user){
         this.id= id;
         this.foodName = foodName;
         this.canteenName = canteenName;
@@ -23,6 +26,23 @@ public class WaitingDabaoer {
         this.deliveryTo = deliveryTo;
         this.status = status;
         this.timestamp = timestamp;
+        this.user = user;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public long getQty() {
+        return qty;
+    }
+
+    public void setQty(long qty) {
+        this.qty = qty;
     }
 
     public void setId(String id) {

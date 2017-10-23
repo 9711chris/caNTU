@@ -1,7 +1,6 @@
 package com.root.cz3002.cantu;
 
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,7 +19,6 @@ import com.root.cz3002.cantu.model.WaitingDabaoer;
 
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by brigi on 12/10/2017.
@@ -43,58 +41,6 @@ public class OrderFragment3 extends Fragment {
         firebaseDatabase=FirebaseDatabase.getInstance();
         dabaoDatabaseReference=firebaseDatabase.getReference().child("dabao");
         final ArrayList<WaitingDabaoer> waitingRequests = new ArrayList<WaitingDabaoer>();
-        /*dabaoChildEventListener=new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                waitingRequests.clear();
-                ArrayList<Map> ordersdabao= (ArrayList<Map>) dataSnapshot.getValue();
-                for(Map a:ordersdabao)
-                {
-
-                    WaitingDabaoer wd= new WaitingDabaoer();
-                    wd.setStatus(a.get("status").toString());
-                    wd.setId(a.get("id").toString());
-                    wd.setFoodName(a.get("foodName").toString());
-                    wd.setCanteenName(a.get("canteenName").toString());
-                    wd.setTimestamp(a.get("timestamp").toString());
-                    wd.setDeliveryTo(a.get("deliveryTo").toString());
-                    waitingRequests.add(wd);
-                }
-                //Log.e("Key of data",ordersdabao.get(0).toString());
-//                for (Map.Entry<String, Object> d: ordersdabao.entrySet())
-//                {
-//
-//                    WaitingDabaoer wd= new WaitingDabaoer();
-//                        Map<String,Object> data= (Map<String, Object>) d.getValue();
-//                    Log.e("Key of data",data.get("0").toString());
-//                        for(Map.Entry<String,Object> index :data.entrySet())
-//                        {
-//
-//                        }
-//                }
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-        dabaoDatabaseReference.addChildEventListener(dabaoChildEventListener);*/
 
         dabaoValueEventListener=new ValueEventListener() {
             @Override
@@ -103,24 +49,26 @@ public class OrderFragment3 extends Fragment {
                 Map<String, ArrayList<Map>> ordersdabao= (Map<String, ArrayList<Map>>) dataSnapshot.getValue();
                 if(ordersdabao!=null){
                 Log.e("orderdabao", ordersdabao.keySet().toString());
-                for(String s:ordersdabao.keySet())
-                {
-                    ArrayList<Map> data=ordersdabao.get(s);
-                    for(Map a:data)
-                    {
-                        Log.e("a", a.toString());
-                        WaitingDabaoer wd= new WaitingDabaoer();
-                        wd.setStatus(a.get("status").toString());
-                        wd.setId(a.get("id").toString());
-                        wd.setFoodName(a.get("foodName").toString());
-                        wd.setCanteenName(a.get("canteenName").toString());
-                        wd.setTimestamp(a.get("timestamp").toString());
-                        wd.setDeliveryTo(a.get("deliveryTo").toString());
-                        waitingRequests.add(wd);
+                for(String s:ordersdabao.keySet()) {
+                    ArrayList<Map> data = ordersdabao.get(s);
+//                    Toast.makeText(getContext(),data.toString(),Toast.LENGTH_SHORT).show();
+                    if (data != null) {
+                        for (Map a : data) {
+                            //Log.e("a", a.toString());
+                            if(a!=null){
+                            WaitingDabaoer wd = new WaitingDabaoer();
+                            wd.setStatus(a.get("status").toString());
+                            wd.setId(a.get("id").toString());
+                            wd.setFoodName(a.get("foodName").toString());
+                            wd.setCanteenName(a.get("canteenName").toString());
+                            wd.setTimestamp(a.get("timestamp").toString());
+                            wd.setDeliveryTo(a.get("deliveryTo").toString());
+                            waitingRequests.add(wd);
+                        }
+                        }
+                        //Log.e("dtaa", data.keySet().toString());
                     }
-                    //Log.e("dtaa", data.keySet().toString());
                 }
-
             }else{
                     Toast.makeText(getContext(), "Oops no data", Toast.LENGTH_SHORT).show();
                 }
@@ -147,6 +95,7 @@ public class OrderFragment3 extends Fragment {
         View rootView = inflater.inflate(R.layout.list_view_from_button, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.listview_from_button);
         listView.setAdapter(waitingAdapter);
+
 
         return listView;
     }

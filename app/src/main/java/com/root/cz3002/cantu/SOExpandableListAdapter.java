@@ -1,5 +1,6 @@
 package com.root.cz3002.cantu;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -133,6 +134,8 @@ public class SOExpandableListAdapter extends BaseExpandableListAdapter {
                  Intent intent = new Intent(_context, OwnerActivity.class);
                  intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                  _context.startActivity(intent);
+                 ((Activity)_context).overridePendingTransition(0, 0);
+                 ((Activity)_context).finish();
              }
          });
 

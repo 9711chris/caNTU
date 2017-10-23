@@ -26,6 +26,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Created by brigi on 12/10/2017.
@@ -61,7 +62,7 @@ public class OrderFragment1 extends Fragment {
         final ArrayList<WaitingDabaoer> orderDabaoRequest = new ArrayList<WaitingDabaoer>();
 
 
-        //TODO: orderPayRequests is an ArrayList<OrderPayData> that will get the data from database
+        //orderPayRequests is an ArrayList<OrderPayData> that will get the data from database
         toPayAdapter = new ToPayAdapter(getActivity(), orderPayRequests);
 
         View rootView = inflater.inflate(R.layout.order_fragment1, container, false);
@@ -98,9 +99,12 @@ public class OrderFragment1 extends Fragment {
                 for(int i=0; i<toPayAdapter.getCount(); i++){
                     if(toPayAdapter.getItem(i).getIsChecked()){
                         //TODO: delete from database
+                        toPayAdapter.remove(orderPayRequests.get(i));
                         checkpoint = true;
+                        i--;
                     }
                 }
+                toPayAdapter.notifyDataSetChanged();
                 if(checkpoint) {
                     Toast.makeText(getContext(), "The order has been deleted", Toast.LENGTH_SHORT).show();
                 }
@@ -116,7 +120,9 @@ public class OrderFragment1 extends Fragment {
             public void onClick(View v) {
                 totalPriceAll = 0;
                 for(int i =0; i<toPayAdapter.getCount(); i++){
-                    totalPriceAll += toPayAdapter.getItem(i).getTotalPrice();
+                    if(toPayAdapter.getItem(i).getIsChecked()) {
+                        totalPriceAll += toPayAdapter.getItem(i).getTotalPrice();
+                    }
                 }
                 new AlertDialog.Builder(getContext())
                         .setTitle("Payment Confirmation")
@@ -163,24 +169,29 @@ public class OrderFragment1 extends Fragment {
                                             toPayAdapter.getItem(i).setDeliverTo(placeDeliver);
                                         }
                                     }
-                                    //TODO: update database send order to waiting tab
+                                    //update database send order to waiting tab
                                     String key=dabaoDatabaseReference.push().getKey();
-
                                     for(int j=0; j<toPayAdapter.getCount();j++){
                                         if(toPayAdapter.getItem(j).getIsChecked()){
+                                            //TimeZone.getAvailableIDs()
                                             DateFormat D=new SimpleDateFormat("dd/MM/yy hh:mm:ss");
+                                            D.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
                                             Date date = new Date();
                                             WaitingDabaoer wd=new WaitingDabaoer();
                                             wd.setCanteenName(toPayAdapter.getItem(j).getCanteenName());
                                             wd.setFoodName(toPayAdapter.getItem(j).getFoodName());
-                                            wd.setStatus(toPayAdapter.getItem(j).getStallName());
+                                            wd.setStallName(toPayAdapter.getItem(j).getStallName());
+                                            wd.setUser(MainActivity.id);
                                             wd.setDeliveryTo(placeDeliver);
-                                            wd.setStatus("searching");
+                                            wd.setQty(toPayAdapter.getItem(j).getQty()); //Added quantity. Changed to int!
+                                            wd.setStatus("SEARCHING");
                                             wd.setTimestamp(D.format(date));
                                             orderDabaoRequest.add(wd);
                                             wd.setId(key);
                                             dabaokeys.add(key);
                                             dabaoDatabaseReference.child(key).setValue(orderDabaoRequest);
+                                            toPayAdapter.remove(orderPayRequests.get(j));
+                                            j--;
                                         }
                                     }
 
