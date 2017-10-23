@@ -39,7 +39,6 @@ public class DabaoerActivity extends AppCompatActivity {
         m.add(new DRChildData("Pasta",2));
         m.add(new DRChildData("Fish bread crumb set",1));
 
-
         dabaoRequests.add(new DabaoRequest(1, "gg", "can1", "yong tau foo", m, "PENDING", "hall10"));
         dabaoRequests.add(new DabaoRequest(2, "gh", "can2", "yong tau foo", m, "PENDING", "hall12"));
 
