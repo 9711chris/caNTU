@@ -107,17 +107,21 @@ public class OrderFragment3 extends Fragment {
                 for(String s:ordersdabao.keySet())
                 {
                     ArrayList<Map> data=ordersdabao.get(s);
-                    for(Map a:data)
-                    {
-                        Log.e("a", a.toString());
-                        WaitingDabaoer wd= new WaitingDabaoer();
-                        wd.setStatus(a.get("status").toString());
-                        wd.setId(a.get("id").toString());
-                        wd.setFoodName(a.get("foodName").toString());
-                        wd.setCanteenName(a.get("canteenName").toString());
-                        wd.setTimestamp(a.get("timestamp").toString());
-                        wd.setDeliveryTo(a.get("deliveryTo").toString());
-                        waitingRequests.add(wd);
+                    if(data!=null){
+                        for (Map a : data) {
+                            if(a!=null) {
+//                        Log.e("a", a.toString());
+                                WaitingDabaoer wd = new WaitingDabaoer();
+                                wd.setStatus(a.get("status").toString());
+                                wd.setId(a.get("id").toString());
+                                wd.setFoodName(a.get("foodName").toString());
+                                wd.setCanteenName(a.get("canteenName").toString());
+                                wd.setTimestamp(a.get("timestamp").toString());
+                                wd.setDeliveryTo(a.get("deliveryTo").toString());
+                                waitingRequests.add(wd);
+                            }
+
+                        }
                     }
                     //Log.e("dtaa", data.keySet().toString());
                 }

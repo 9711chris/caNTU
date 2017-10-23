@@ -140,6 +140,14 @@ public class OrderFragment1 extends Fragment {
                                     a.setId(key);
                                 }
 
+                                for(int i=0;i<toPayAdapter.getCount();i++){
+                                    if(toPayAdapter.getItem(i).getIsChecked()) {
+                                        //toPayAdapter.getItem(i).setId(key);
+                                        toPayAdapter.remove(orderPayRequests.get(i));
+                                        i--;
+                                    }
+                                }
+
                                 orderDatabaseReference.child(orderPayRequests.get(0).getStallName().toString()).child(key).setValue(orderPayRequests);
                                 Toast.makeText(getContext(), "Payment Confirmation Successfull", Toast.LENGTH_SHORT).show();
                             }})
