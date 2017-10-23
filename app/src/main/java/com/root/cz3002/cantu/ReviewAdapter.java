@@ -63,6 +63,7 @@ public class ReviewAdapter extends ArrayAdapter<Review> {
         if (position < 0 || position >= mIdMap.size()) {
             return INVALID_ID;
         }
+        System.out.println("ITEM POSITION IS "+position);
         Review item = getItem(position);
         return mIdMap.get(item);
     }

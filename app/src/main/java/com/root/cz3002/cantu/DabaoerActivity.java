@@ -26,16 +26,16 @@ public class DabaoerActivity extends AppCompatActivity {
         m.put("wanton noodle",1);
 
         ArrayList<DabaoRequest> dabaoRequests = new ArrayList<DabaoRequest>();
-        dabaoRequests.add(new DabaoRequest(1, "gg", "can1", "yong tau foo", m, "PENDING", "hall10"));
-        dabaoRequests.add(new DabaoRequest(2, "gh", "can2", "yong tau foo", m, "PENDING", "hall12"));
-        dabaoRequests.add(new DabaoRequest(4, "gf", "can3", "yong tau foo", m, "PENDING", "hall11"));
-        dabaoRequests.add(new DabaoRequest(5, "gr", "can3", "yong tau foo", m, "PENDING", "hall11"));
-        dabaoRequests.add(new DabaoRequest(6, "gt", "can3", "yong tau foo", m, "PENDING", "hall11"));
-        dabaoRequests.add(new DabaoRequest(7, "gy", "can3", "yong tau foo", m, "PENDING", "hall11"));
-        dabaoRequests.add(new DabaoRequest(8, "gu", "can3", "yong tau foo", m, "PENDING", "hall11"));
-        dabaoRequests.add(new DabaoRequest(9, "gi", "can3", "yong tau foo", m, "PENDING", "hall11"));
-        dabaoRequests.add(new DabaoRequest(10, "go", "can3", "yong tau foo", m, "PENDING", "hall11"));
-        dabaoRequests.add(new DabaoRequest(11,"gp", "can3", "yong tau foo", m, "PENDING", "hall11"));
+//        dabaoRequests.add(new DabaoRequest(1, "gg", "can1", "yong tau foo", m, "PENDING", "hall10"));
+//        dabaoRequests.add(new DabaoRequest(2, "gh", "can2", "yong tau foo", m, "PENDING", "hall12"));
+//        dabaoRequests.add(new DabaoRequest(4, "gf", "can3", "yong tau foo", m, "PENDING", "hall11"));
+//        dabaoRequests.add(new DabaoRequest(5, "gr", "can3", "yong tau foo", m, "PENDING", "hall11"));
+//        dabaoRequests.add(new DabaoRequest(6, "gt", "can3", "yong tau foo", m, "PENDING", "hall11"));
+//        dabaoRequests.add(new DabaoRequest(7, "gy", "can3", "yong tau foo", m, "PENDING", "hall11"));
+//        dabaoRequests.add(new DabaoRequest(8, "gu", "can3", "yong tau foo", m, "PENDING", "hall11"));
+//        dabaoRequests.add(new DabaoRequest(9, "gi", "can3", "yong tau foo", m, "PENDING", "hall11"));
+//        dabaoRequests.add(new DabaoRequest(10, "go", "can3", "yong tau foo", m, "PENDING", "hall11"));
+//        dabaoRequests.add(new DabaoRequest(11,"gp", "can3", "yong tau foo", m, "PENDING", "hall11"));
 
         DabaoRequestAdapter dabaoAdapter = new DabaoRequestAdapter(this, dabaoRequests);
 
