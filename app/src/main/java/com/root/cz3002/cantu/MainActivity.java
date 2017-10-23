@@ -5,13 +5,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.renderscript.Sampler;
+import android.os.Bundle;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -21,29 +21,30 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ListView;
 
 import com.google.firebase.database.ChildEventListener;
-import com.root.cz3002.cantu.model.MenuItem;
-import com.root.cz3002.cantu.model.OrderPayData;
-import com.root.cz3002.cantu.model.Review;
-import com.root.cz3002.cantu.model.Stall;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
+import com.root.cz3002.cantu.model.MenuItem;
+import com.root.cz3002.cantu.model.OrderPayData;
+import com.root.cz3002.cantu.model.Review;
+import com.root.cz3002.cantu.model.Stall;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
+import java.util.TimeZone;
 
 import me.himanshusoni.quantityview.QuantityView;
 
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String MENU ="menu" ;
     public static ArrayList<OrderPayData> orderPayRequests=new ArrayList<OrderPayData>();
     private static String STALL="stall";
-    private static String id;
+    public static String id;
     private String mode;
     private LinearLayout list;
     private RelativeLayout bottomBar;
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
     private ValueEventListener cuisineValueEventListener;
     private DatabaseReference reviewDatabaseReference;
     private ChildEventListener reviewChildEventListener;
+    private ValueEventListener reviewValueEventListener;
 
     private ValueEventListener stallValueEventListener;
     private DatabaseReference cuisineDatabaseReference;
@@ -83,8 +85,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         MainActivity.id=null;
         //Hide upper bars
+
         firebaseDatabase=FirebaseDatabase.getInstance();
-        reviewDatabaseReference=firebaseDatabase.getReference().child("review");
+
         View decorView = getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
@@ -97,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
         }
         if (intent.hasExtra("ID")) {
             MainActivity.id = bundleOld.getString("ID");
-            Log.e("ID", "I'm working bro");
             Toast.makeText(MainActivity.this,"I am "+id, Toast.LENGTH_LONG).show();
         }
 
@@ -194,11 +196,7 @@ public class MainActivity extends AppCompatActivity {
         run = new Runnable() {
             public void run() {
                 //reload content
-                reviews.clear();
                 populateReview();
-                reviewAdapter.notifyDataSetChanged();
-                reviewListView.invalidateViews();
-                reviewListView.refreshDrawableState();
             }
         };
     }
@@ -250,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
                                 menuItem.getStall(),
                                 "Canteen "+menuItem.getCanteen(),
                                 quantity.getQuantity());
-                        Log.e("DATA", /*menuItem.getName()+*/" "+menuItem.getStall()+" "+menuItem.getPrice()+" "+quantity.getQuantity());
+                        //Log.e("DATA", /*menuItem.getName()+*/" "+menuItem.getStall()+" "+menuItem.getPrice()+" "+quantity.getQuantity());
                         MainActivity.orderPayRequests.add(o);
                         Toast.makeText(MainActivity.this, "Input to DB " + menuItem.getName() + " with quantity " + quantity.getQuantity(), Toast.LENGTH_SHORT).show();
                         quantity.setQuantity(0);
@@ -270,7 +268,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void populateList(View v) {
-        Log.e("Running populate","Running");
         list.removeAllViews();
         if(bottomBar!=null){
             bottomBar.removeAllViews();
@@ -283,12 +280,10 @@ public class MainActivity extends AppCompatActivity {
         if(mode.equals("canteen")) {
 
             canteenDatabaseReference = firebaseDatabase.getReference().child("canteen").child(category.toString()).child("stalls");
-            Log.e("yoyo ", canteenDatabaseReference.getRoot().toString());
             canteenValueEventListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     list.removeAllViews();
-                    Log.e("Running Running", "Running");
                     Map<String, Object> data = (Map<String, Object>) dataSnapshot.getValue();
                     addDataToList(data,STALL);
                 }
@@ -404,75 +399,66 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void populateReview(){
-        reviewChildEventListener= new ChildEventListener() {
+
+        reviewValueEventListener=new ValueEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                reviews.clear();
+
                 Map<String, Object> ids= (Map<String, Object>) dataSnapshot.getValue();
-                Log.e("Children count", ids.toString());
-                for(Map.Entry<String,Object> data:ids.entrySet())
-                {
-                    Review review=new Review();
 
-                    Map<String, Object> d= (Map<String, Object>) data.getValue();
-                    for(Map.Entry<String,Object> fin:d.entrySet())
-                    {
-                        //Toast.makeText(MainActivity.this,"Inside for",Toast.LENGTH_SHORT).show();
+                if(ids!=null) {
+                    for (Map.Entry<String, Object> data : ids.entrySet()) {
+                        Review review = new Review();
 
-                        if(fin.getKey().toString().equals("id"))
-                        {
-                            review.setId(fin.getValue().toString());
-                        }
-                        if(fin.getKey().toString().equals("stallName"))
-                        {
-                            review.setStallName(fin.getValue().toString());
-                        }
-                        if(fin.getKey().toString().equals("comment"))
-                        {
-                            review.setComment(fin.getValue().toString());
-                        }
-                        if(fin.getKey().toString().equals("userName"))
-                        {
-                            review.setUserName(fin.getValue().toString());
-                        }
-                        if(fin.getKey().toString().equals("rating"))
-                        {
-                            review.setRating(Double.parseDouble(String.valueOf(fin.getValue())));
-                        }
-                        if(fin.getKey().toString().equals("dateTime"))
-                        {
-                            review.setDateTime(fin.getValue().toString());
-                        }
+                        Map<String, Object> d = (Map<String, Object>) data.getValue();
+                        for (Map.Entry<String, Object> fin : d.entrySet()) {
+                            //Toast.makeText(MainActivity.this,"Inside for",Toast.LENGTH_SHORT).show();
 
+                            if (fin.getKey().toString().equals("id")) {
+                                review.setId(fin.getValue().toString());
+                            }
+                            if (fin.getKey().toString().equals("stallName")) {
+                                review.setStallName(fin.getValue().toString());
+                            }
+                            if (fin.getKey().toString().equals("comment")) {
+                                review.setComment(fin.getValue().toString());
+                            }
+                            if (fin.getKey().toString().equals("userName")) {
+                                review.setUserName(fin.getValue().toString());
+                            }
+                            if (fin.getKey().toString().equals("rating")) {
+                                review.setRating(Double.parseDouble(String.valueOf(fin.getValue())));
+                            }
+                            if (fin.getKey().toString().equals("dateTime")) {
+                                review.setDateTime(fin.getValue().toString());
+                            }
+                        }
+                        reviews.add(review);
                     }
-                    reviews.add(review);
-
                 }
 
-            }
+                System.out.println("SIZE OF LV !!!! "+reviews.size());
 
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-            }
+                reviewAdapter.notifyDataSetChanged();
 
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+                throw databaseError.toException();
             }
         };
-        reviewDatabaseReference.addChildEventListener(reviewChildEventListener);
+
+        reviewDatabaseReference.addValueEventListener(reviewValueEventListener);
+
     }
 
     private void showInfoAndReviews(final Stall stall) {
 
+        reviewDatabaseReference=firebaseDatabase.getReference().child("review").child(stall.getName());
+
         final Stall theStall = stall;
-        final int numOfReviews = 0;
 
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         LayoutInflater inflater = this.getLayoutInflater();
@@ -480,115 +466,33 @@ public class MainActivity extends AppCompatActivity {
 
         reviews.clear();
 
-        //inside loop of DB
-        //compare the stall.getName() in DB;
-        //get numOfReviews;
+        reviewAdapter =
+                new ReviewAdapter(this,
+                        R.layout.review_list,
+                        R.id.userName,
+                        reviews,
+                        mode
+                );
 
-//        reviewChildEventListener= new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-//                Map<String, Object> ids= (Map<String, Object>) dataSnapshot.getValue();
-//                Log.e("Children count", ids.toString());
-//                for(Map.Entry<String,Object> data:ids.entrySet())
-//                {
-//                    Review review=new Review();
-//
-//                    Map<String, Object> d= (Map<String, Object>) data.getValue();
-//                    for(Map.Entry<String,Object> fin:d.entrySet())
-//                    {
-//                        //Toast.makeText(MainActivity.this,"Inside for",Toast.LENGTH_SHORT).show();
-//
-//                        if(fin.getKey().toString().equals("id"))
-//                        {
-//                            review.setId(fin.getValue().toString());
-//                        }
-//                        if(fin.getKey().toString().equals("stallName"))
-//                        {
-//                            review.setStallName(fin.getValue().toString());
-//                        }
-//                        if(fin.getKey().toString().equals("comment"))
-//                        {
-//                            review.setComment(fin.getValue().toString());
-//                        }
-//                        if(fin.getKey().toString().equals("userName"))
-//                        {
-//                            review.setUserName(fin.getValue().toString());
-//                        }
-//                        if(fin.getKey().toString().equals("rating"))
-//                        {
-//                            review.setRating(Double.parseDouble(String.valueOf(fin.getValue())));
-//                        }
-//                        if(fin.getKey().toString().equals("dateTime"))
-//                        {
-//                            review.setDateTime(fin.getValue().toString());
-//                        }
-//
-//                    }
-//                    reviews.add(review);
-//
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-//            }
-//
-//            @Override
-//            public void onChildRemoved(DataSnapshot dataSnapshot) {
-//            }
-//
-//            @Override
-//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//            }
-//        };
-//        reviewDatabaseReference.addChildEventListener(reviewChildEventListener);
-
-
-        Review review1 = new Review("1", stall.getName(),"shelina","Very delicious!", "11-08-2017 17:05", 4);
-        Review review2 = new Review("2", stall.getName(),"lusandro","Urgh bad taste!", "11-08-2017 16:00", 2);
-
-        reviews.add(review1);
-        reviews.add(review2);
+        reviewListView = new ListView(this);
+        reviewListView.setAdapter(reviewAdapter);
 
         populateReview();
 
-        if(reviews.isEmpty()){
-            System.out.println("reviews is NULL");
-            bottomSheetView = inflater.inflate(R.layout.bottom_sheet, null);
-        }
-        else {
-            System.out.println("reviews is not NULL");
-            reviewAdapter =
-                    new ReviewAdapter(this,
-                            R.layout.review_list,
-                            R.id.userName,
-                            reviews,
-                            mode
-                    );
+        bottomSheetView = inflater.inflate(R.layout.bottom_sheet, null);
 
-            reviewListView = new ListView(this);
-            reviewListView.setAdapter(reviewAdapter);
+        final LinearLayout ll = (LinearLayout) bottomSheetView.findViewById(R.id.reviews);
+        ll.addView(reviewListView);
 
-            bottomSheetView = inflater.inflate(R.layout.bottom_sheet, null);
-
-            final LinearLayout ll = (LinearLayout) bottomSheetView.findViewById(R.id.reviews);
-            ll.addView(reviewListView);
-
-            reviewListView.setOnTouchListener(new View.OnTouchListener() {
-                // Setting on Touch Listener for handling the touch inside ScrollView
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    // Disallow the touch request for parent scroll on touch of child view
-                    v.getParent().requestDisallowInterceptTouchEvent(true);
-                    return false;
-                }
-            });
-        }
+        reviewListView.setOnTouchListener(new View.OnTouchListener() {
+            // Setting on Touch Listener for handling the touch inside ScrollView
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // Disallow the touch request for parent scroll on touch of child view
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
 
         TextView stallName = (TextView) bottomSheetView.findViewById(R.id.textStall);
         TextView openingHour =  (TextView) bottomSheetView.findViewById(R.id.openingHour);
@@ -609,55 +513,58 @@ public class MainActivity extends AppCompatActivity {
         writeReview.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-                final View dialogView = inflater.inflate(R.layout.review_dialog, null);
-                TextView stallName = (TextView) dialogView.findViewById(R.id.stallName);
-                stallName.setText(theStall.getName());
 
-                builder.setView(dialogView);
-                builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        EditText editText = (EditText) dialogView.findViewById(R.id.commentWrite);
-                        String comment = editText.getText().toString();
+                if(id==null){
+                    Toast.makeText(getApplicationContext(),"You have to login first to write review",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+                    final View dialogView = inflater.inflate(R.layout.review_dialog, null);
+                    TextView stallName = (TextView) dialogView.findViewById(R.id.stallName);
+                    stallName.setText(theStall.getName());
 
-                        RatingBar ratingBar = (RatingBar) dialogView.findViewById(R.id.ratingBarWrite);
-                        double rating = ratingBar.getRating();
+                    builder.setView(dialogView);
+                    builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            EditText editText = (EditText) dialogView.findViewById(R.id.commentWrite);
+                            String comment = editText.getText().toString();
 
-                        //Toast.makeText(MainActivity.this, "Rating: "+rating+" and Comment: "+comment, Toast.LENGTH_SHORT).show();
+                            RatingBar ratingBar = (RatingBar) dialogView.findViewById(R.id.ratingBarWrite);
+                            double rating = ratingBar.getRating();
 
-                        String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
-                        Review review=new Review();
-                        String key=reviewDatabaseReference.push().getKey();
-                        review.setComment(comment);
-                        review.setDateTime(currentDateTimeString);
-                        review.setRating(rating);
-                        review.setUserName(MainActivity.id);
-                        review.setStallName(theStall.getName());
-                        review.setId(key);
+                            //Toast.makeText(MainActivity.this, "Rating: "+rating+" and Comment: "+comment, Toast.LENGTH_SHORT).show();
 
-                        reviewDatabaseReference.child(review.getStallName()).child(key).setValue(review);
+                            DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss");
+                            String currentDateTimeString = df.format(Calendar.getInstance().getTime());
 
+                            //String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
 
-                        //Pass theStall.getName(), id, comment, currentDateTimeString, rating to DB
+                            Review review = new Review();
+                            String key = reviewDatabaseReference.push().getKey();
+                            review.setComment(comment);
+                            review.setDateTime(currentDateTimeString);
+                            review.setRating(rating);
+                            review.setUserName(MainActivity.id);
+                            review.setStallName(theStall.getName());
+                            review.setId(key);
 
-                        //Review review3 = new Review(numOfReviews+1, theStall.getName(), String.valueOf(id) , comment, currentDateTimeString, rating);
+                            reviewDatabaseReference.child(key).setValue(review);
 
-                       // reviews.add(review3);
+                            //runOnUiThread(run);
+                        }
+                    });
 
-                        runOnUiThread(run);
-                    }
-                });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
 
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                }
             }
         });
 
@@ -729,6 +636,10 @@ public class MainActivity extends AppCompatActivity {
         if(dishValueEventListener!=null)
         {
             dishDataBaseReference.removeEventListener(dishValueEventListener);
+        }
+        if(reviewValueEventListener!=null)
+        {
+            reviewDatabaseReference.removeEventListener(reviewValueEventListener);
         }
 
     }

@@ -16,6 +16,9 @@ public class DabaoRequest {
     private String status;
     private String placeDeliver;
 
+    public DabaoRequest()
+    {}
+
     public DabaoRequest(int id, String name, String canteenName, String stallName, ArrayList<DRChildData> food_qty, String status,
                         String placeDeliver){
         this.id = id;
