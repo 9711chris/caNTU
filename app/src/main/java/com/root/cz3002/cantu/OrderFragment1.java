@@ -179,6 +179,8 @@ public class OrderFragment1 extends Fragment {
                                     }
                                     //update database send order to waiting tab
                                     String key=dabaoDatabaseReference.push().getKey();
+                                    System.out.println("===start order");
+                                    System.out.println("===tp"+toPayAdapter.getCount());
                                     for(int j=0; j<toPayAdapter.getCount();j++){
                                         if(toPayAdapter.getItem(j).getIsChecked()){
                                             //TimeZone.getAvailableIDs()
@@ -199,6 +201,8 @@ public class OrderFragment1 extends Fragment {
                                             dabaokeys.add(key);
                                             dabaoDatabaseReference.child(key).setValue(orderDabaoRequest);
                                             toPayAdapter.remove(orderPayRequests.get(j));
+                                            System.out.println("===tpbawah"+toPayAdapter.getCount());
+                                            //System.out.println("==="+orderPayRequests.size());
                                             j--;
                                         }
                                     }
@@ -231,6 +235,7 @@ public class OrderFragment1 extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                System.out.println("===gg");
                 if(toPayAdapter.getItem(position).getIsChecked()){
                     toPayAdapter.getItem(position).setIsChecked(false);
                 }

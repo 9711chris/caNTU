@@ -3,6 +3,9 @@ package com.root.cz3002.cantu;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -16,7 +19,9 @@ import com.root.cz3002.cantu.model.DRChildData;
 import com.root.cz3002.cantu.model.DabaoRequest;
 
 import java.util.ArrayList;
+import java.util.Timer;
 import java.util.Map;
+import java.util.TimerTask;
 
 /**
  * Created by brigi on 10/10/2017.
@@ -26,58 +31,83 @@ public class DabaoerActivity extends AppCompatActivity {
     private DatabaseReference dabaoDatabaseReference;
     private ChildEventListener dabaoChildEventListener;
     private ValueEventListener dabaoValueEventListener;
-    private static ArrayList<DRChildData> m;
     ArrayList<DabaoRequest> dabaoRequests;
+    DabaoRequestAdapter dabaoAdapter;
+    Timer timer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_view_from_button);
         dabaoDatabaseReference= FirebaseDatabase.getInstance().getReference().child("dabao");
-        m = new ArrayList<DRChildData>();
+        //m = new ArrayList<DRChildData>();
         dabaoRequests = new ArrayList<DabaoRequest>();
         //ArrayList<DRChildData> m = new ArrayList<DRChildData>();
-        m.add(new DRChildData("Pasta",2));
-        m.add(new DRChildData("Fish bread crumb set",1));
+        //m.add(new DRChildData("Pasta",2));
+        //m.add(new DRChildData("Fish bread crumb set",1));
 
-        dabaoRequests.add(new DabaoRequest(1, "gg", "can1", "yong tau foo", m, "PENDING", "hall10"));
-        dabaoRequests.add(new DabaoRequest(2, "gh", "can2", "yong tau foo", m, "PENDING", "hall12"));
+        dabaoAdapter = new DabaoRequestAdapter(this, dabaoRequests);
+        dabaoAdapter.setNotifyOnChange(true);
+
+       // dabaoRequests.add(new DabaoRequest(1, "gg", "can1", "yong tau foo", m, "PENDING", "hall10"));
+        //dabaoRequests.add(new DabaoRequest(2, "gh", "can2", "yong tau foo", m, "PENDING", "hall12"));
 
         dabaoValueEventListener=new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                //dabaoRequests.clear();
-                Map<String, Object> dataSnapshot1= (Map<String, Object>) dataSnapshot.getValue();
-                if(dataSnapshot!=null) {
-                    dabaoRequests.clear();
-                    for (Map.Entry<String, Object> data : dataSnapshot1.entrySet()) {
-                        DabaoRequest dabaoRequest = new DabaoRequest();
-                        m.clear();
-                        ArrayList<Map<String, Object>> d = (ArrayList<Map<String, Object>>) data.getValue();
-                        int count=0;
-                        for (Map<String, Object> dt : d) {
-                            dabaoRequest.setCanteenName(dt.get("canteenName").toString());
-                            dabaoRequest.setPlaceDeliver(dt.get("deliveryTo").toString());
-                            dabaoRequest.setStatus(dt.get("status").toString());
-                            dabaoRequest.setStallName(dt.get("stallName").toString());
-                            dabaoRequest.setName(dt.get("user").toString());
-                            DRChildData children = new DRChildData(dt.get("foodName").toString(), (Long) dt.get("qty"));
-                            m.add(children);
-                            Log.e("Iteration ", String.valueOf(++count));
-                            Log.e("Food Name", m.get(0).getFoodName().toString());
+                for(DataSnapshot d : dataSnapshot.getChildren()){
+                    DabaoRequest dabaoRequest = new DabaoRequest();
+                    boolean found = false;
+                    ArrayList<DRChildData> m = new ArrayList<DRChildData>();
+                    int count = 0;
+                    for(DataSnapshot d1: d.getChildren()){
+                        dabaoRequest.setCanteenName(d1.child("canteenName").getValue(String.class));
+                        dabaoRequest.setPlaceDeliver(d1.child("deliveryTo").getValue(String.class));
+                        if(d1.child("status").getValue(String.class).equals("FOUND")){
+                            found = true;
+                            break;
                         }
-                        Log.e("Iteration outside for", String.valueOf(++count));
+                        else{
+                            dabaoRequest.setStatus(d1.child("status").getValue(String.class));
+                        }
+                        dabaoRequest.setStallName(d1.child("stallName").getValue(String.class));
+                        dabaoRequest.setName(d1.child("user").getValue(String.class));
+                        dabaoRequest.setId(d1.child("id").getValue(String.class));
+                        dabaoRequest.setKey(d.getKey().toString());
+                        count++;
+                        //dabaoRequest.setO_f_number(d1.getKey().toString());
+                        Long qty;
+                        if((d1.child("qty").getValue(Long.class)) == null) {
+                            qty = new Long(0);
+                        }
+                        else{
+                            qty = (Long) d1.child("qty").getValue(Long.class);
+                        }
+
+                        DRChildData children = new DRChildData(d1.child("foodName").getValue(String.class), qty);
+                        m.add(children);
+                    }
+                    if(!found){
+                        dabaoRequest.setChildCount(count);
                         dabaoRequest.setFood_qty(m);
                         dabaoRequests.add(dabaoRequest);
-                        Log.e("Value m", m.get(0).toString());
 
                     }
+                }
+
+
+
+
+
                     if (dabaoRequests.isEmpty()) {
                         Toast.makeText(DabaoerActivity.this, "It's empty here only", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(DabaoerActivity.this, "It's not empty here", Toast.LENGTH_SHORT).show();
                     }
-                }
+
+                dabaoAdapter.notifyDataSetChanged();
             }
+
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -90,13 +120,102 @@ public class DabaoerActivity extends AppCompatActivity {
         {
             Toast.makeText(this,"Length is "+ dabaoRequests.size(), Toast.LENGTH_SHORT).show();
         }
-        DabaoRequestAdapter dabaoAdapter = new DabaoRequestAdapter(this, dabaoRequests);
+
         Log.e("bub bub", dabaoRequests.toString());
         ListView listView = (ListView) findViewById(R.id.listview_from_button);
         listView.setAdapter(dabaoAdapter);
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final int pos = position;
+                Button b1 = (Button) view.findViewById(R.id.acc);
+                //dabaoAdapter.notifyDataSetChanged();
+                //finish();
+                //startActivity(getIntent());
+                b1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        System.out.println("===kk");
+                        updateStatusInDabaoDB(dabaoAdapter.getItem(pos));
+                        //dabaoRequests = new ArrayList<DabaoRequest>();
+                        populateAdapter();
+                        dabaoAdapter.notifyDataSetChanged();
+                        dabaoAdapter.notifyDataSetChanged();
+                        dabaoAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        });
+
+    }
+    private DatabaseReference dabaoDatabaseRef = FirebaseDatabase.getInstance().getReference().child("dabao");
+    private void updateStatusInDabaoDB(final DabaoRequest currentDabaoRequest){
+        DatabaseReference statusRef = dabaoDatabaseRef.child(currentDabaoRequest.getKey()).getRef();
+        int count = currentDabaoRequest.getChildCount();
+        for(int i =0; i<count; i++){
+            statusRef.child(String.valueOf(i)).child("status").setValue("FOUND");
+        }
+    }
+
+    private void populateAdapter(){
+        dabaoRequests.clear();
+        dabaoValueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot d : dataSnapshot.getChildren()){
+                    DabaoRequest dabaoRequest = new DabaoRequest();
+                    boolean found = false;
+                    ArrayList<DRChildData> m = new ArrayList<DRChildData>();
+                    int count = 0;
+                    for(DataSnapshot d1: d.getChildren()){
+                        System.out.println("==="+d.getChildrenCount());
+                        dabaoRequest.setCanteenName(d1.child("canteenName").getValue(String.class));
+                        dabaoRequest.setPlaceDeliver(d1.child("deliveryTo").getValue(String.class));
+                        System.out.println("==="+d1.child("deliveryTo").getValue(String.class));
+                        System.out.println("==="+d1.child("status").getValue(String.class));
+                        if(d1.child("status").getValue(String.class).equals("FOUND")){
+                            found = true;
+                            break;
+                        }
+                        else{
+                            dabaoRequest.setStatus(d1.child("status").getValue(String.class));
+                        }
+                        dabaoRequest.setStallName(d1.child("stallName").getValue(String.class));
+                        dabaoRequest.setName(d1.child("user").getValue(String.class));
+                        dabaoRequest.setId(d1.child("id").getValue(String.class));
+                        dabaoRequest.setKey(d.getKey().toString());
+                        count++;
+                        //dabaoRequest.setO_f_number(d1.getKey().toString());
+                        Long qty;
+                        if((d1.child("qty").getValue(Long.class)) == null) {
+                            qty = new Long(0);
+                        }
+                        else{
+                            qty = (Long) d1.child("qty").getValue(Long.class);
+                        }
+
+                        DRChildData children = new DRChildData(d1.child("foodName").getValue(String.class), qty);
+                        m.add(children);
+                    }
+                    if(!found){
+                        dabaoRequest.setChildCount(count);
+                        dabaoRequest.setFood_qty(m);
+                        dabaoRequests.add(dabaoRequest);
+                        m.clear();
+
+                    }
+                }
+            }
 
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        dabaoDatabaseRef.addValueEventListener(dabaoValueEventListener);
+        dabaoAdapter.notifyDataSetChanged();
     }
 
 }

@@ -8,19 +8,21 @@ import java.util.Map;
  */
 
 public class DabaoRequest {
-    private int id;
+    private String id;
     private String name;
     private String canteenName;
     private String stallName;
     private ArrayList<DRChildData> food_qty;
     private String status;
     private String placeDeliver;
+    private String key;
+    private int childCount; //number of food
 
     public DabaoRequest()
     {}
 
-    public DabaoRequest(int id, String name, String canteenName, String stallName, ArrayList<DRChildData> food_qty, String status,
-                        String placeDeliver){
+    public DabaoRequest(String id, String name, String canteenName, String stallName, ArrayList<DRChildData> food_qty, String status,
+                        String placeDeliver, String key, int childCount){
         this.id = id;
         this.name = name;
         this.canteenName = canteenName;
@@ -28,18 +30,23 @@ public class DabaoRequest {
         this.food_qty = food_qty;
         this.status = status;
         this.placeDeliver = placeDeliver;
+        this.key = key;
+        this.childCount= childCount;
+
     }
 
-    public int getId(){ return id;}
+    public String getId(){ return id;}
     public String getName() { return name;}
     public String getCanteenName(){ return canteenName;}
     public String getStallName(){ return stallName;}
     public ArrayList<DRChildData> getFood_qty() { return food_qty;}
     public String getStatus(){return status;}
     public String getPlaceDeliver(){return placeDeliver;}
+    public String getKey(){return key;}
+    public int getChildCount(){return childCount;}
 
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -66,4 +73,8 @@ public class DabaoRequest {
     public void setPlaceDeliver(String placeDeliver) {
         this.placeDeliver = placeDeliver;
     }
+
+    public void setKey(String key){this.key = key;}
+
+    public void setChildCount(int childCount) {this.childCount = childCount;}
 }

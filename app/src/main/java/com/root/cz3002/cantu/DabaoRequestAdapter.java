@@ -1,6 +1,7 @@
 package com.root.cz3002.cantu;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,11 +10,22 @@ import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.root.cz3002.cantu.model.DRChildData;
 import com.root.cz3002.cantu.model.DabaoRequest;
+import com.root.cz3002.cantu.model.WaitingDabaoer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by brigi on 10/10/2017.
@@ -25,6 +37,7 @@ public class DabaoRequestAdapter extends ArrayAdapter<DabaoRequest> {
     private ExpandableListView expListView;
     private String listDataHeader;
     private List<DRChildData> listDataChild;
+    //private DatabaseReference dabaoDatabaseRef = FirebaseDatabase.getInstance().getReference().child("dabao");
 
     public DabaoRequestAdapter(Activity context, ArrayList<DabaoRequest> dabaoRequests){
         // Here, we initialize the ArrayAdapter's internal storage for the context and the list.
@@ -32,6 +45,7 @@ public class DabaoRequestAdapter extends ArrayAdapter<DabaoRequest> {
         // Because this is a custom adapter for two TextViews and an ImageView, the adapter is not
         // going to use this second argument, so it can be any value. Here, we used 0.
         super(context, 0, dabaoRequests);
+        setNotifyOnChange(true);
     }
 
     @Override
@@ -45,7 +59,7 @@ public class DabaoRequestAdapter extends ArrayAdapter<DabaoRequest> {
 
 
         // Get the {@link AndroidFlavor} object located at this position in the list
-        DabaoRequest currentDabaoRequest = getItem(position);
+        final DabaoRequest currentDabaoRequest = getItem(position);
 
         // Find the TextView in the dabao_request_item.xml layout with the ID canteen_name
         TextView tv1 = (TextView) listItemView.findViewById(R.id.canteen_name);
@@ -72,6 +86,14 @@ public class DabaoRequestAdapter extends ArrayAdapter<DabaoRequest> {
 
         Button b1 = (Button) listItemView.findViewById(R.id.acc);
         b1.setText("Accept Order");
+        /*b1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateStatusInDabaoDB(currentDabaoRequest);
+                notifyDataSetChanged();
+            }
+        });
+        */
         //b1.setOnClickListener(); implement to send data to database.
 
         // Return the whole list item layout (containing 2 TextViews and an ImageView)
@@ -83,4 +105,13 @@ public class DabaoRequestAdapter extends ArrayAdapter<DabaoRequest> {
         listDataHeader = "List of food";
         listDataChild = dabaoRequest.getFood_qty();
     }
+
+    /*private void updateStatusInDabaoDB(final DabaoRequest currentDabaoRequest){
+        DatabaseReference statusRef = dabaoDatabaseRef.child(currentDabaoRequest.getKey()).getRef();
+        int count = currentDabaoRequest.getChildCount();
+        for(int i =0; i<count; i++){
+            statusRef.child(String.valueOf(i)).child("status").setValue("FOUND");
+        }
+    }
+    */
 }
