@@ -45,7 +45,7 @@ public class DabaoRequestAdapter extends ArrayAdapter<DabaoRequest> {
         // Because this is a custom adapter for two TextViews and an ImageView, the adapter is not
         // going to use this second argument, so it can be any value. Here, we used 0.
         super(context, 0, dabaoRequests);
-        setNotifyOnChange(true);
+        //setNotifyOnChange(true);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class DabaoRequestAdapter extends ArrayAdapter<DabaoRequest> {
 
 
         // Get the {@link AndroidFlavor} object located at this position in the list
-        final DabaoRequest currentDabaoRequest = getItem(position);
+        DabaoRequest currentDabaoRequest = getItem(position);
 
         // Find the TextView in the dabao_request_item.xml layout with the ID canteen_name
         TextView tv1 = (TextView) listItemView.findViewById(R.id.canteen_name);

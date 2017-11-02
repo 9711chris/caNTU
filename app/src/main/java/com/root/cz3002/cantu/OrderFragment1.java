@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.root.cz3002.cantu.model.FinalOrder;
 import com.root.cz3002.cantu.model.OrderPayData;
 import com.root.cz3002.cantu.model.WaitingDabaoer;
 
@@ -26,6 +27,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 
 /**
@@ -60,6 +63,7 @@ public class OrderFragment1 extends Fragment {
 
         final ArrayList<OrderPayData> orderPayRequests = MainActivity.orderPayRequests;
         final ArrayList<WaitingDabaoer> orderDabaoRequest = new ArrayList<WaitingDabaoer>();
+        final ArrayList<FinalOrder> orderFinalRequests = new ArrayList<FinalOrder>();
 
 
         //orderPayRequests is an ArrayList<OrderPayData> that will get the data from database
@@ -134,11 +138,61 @@ public class OrderFragment1 extends Fragment {
 
                             public void onClick(DialogInterface dialog, int whichButton) {
 
-                               String key= orderDatabaseReference.child(orderPayRequests.get(0).getStallName().toString()).push().getKey();
+                                String key = "";
+                               //String key= orderDatabaseReference.child(orderPayRequests.get(0).getStallName().toString()).push().getKey();
                                 for(OrderPayData a:orderPayRequests)
                                 {
-                                    a.setId(key);
+                                    Map<String,String> stall_uid = new HashMap<String, String>();
+                                    if(!stall_uid.containsKey(a.getStallName())) {
+                                        key = orderDatabaseReference.child(a.getStallName()).push().getKey();
+                                        stall_uid.put(a.getStallName(), key);
+                                    }
+                                    if(a.getIsChecked()){
+                                        key = stall_uid.get(a.getStallName());
+                                        a.setId(key);
+                                        orderDatabaseReference.child(a.getStallName().toString()).child(key).setValue(a);
+                                    }
                                 }
+
+                                String keyo = dabaoDatabaseReference.child("self").push().getKey();
+                                System.out.println("===start order0");
+                                System.out.println("===tp0"+toPayAdapter.getCount());
+                                for(int j=0; j<toPayAdapter.getCount();j++){
+                                    if(toPayAdapter.getItem(j).getIsChecked()){
+                                        //TimeZone.getAvailableIDs()
+                                        DateFormat D=new SimpleDateFormat("dd/MM/yy hh:mm:ss");
+                                        D.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
+                                        Date date = new Date();
+                                        //input to final order
+                                        FinalOrder finalOrder = new FinalOrder();
+                                        finalOrder.setCanteenName(toPayAdapter.getItem(j).getCanteenName());
+                                        finalOrder.setFoodName(toPayAdapter.getItem(j).getFoodName());
+                                        finalOrder.setStallName(toPayAdapter.getItem(j).getStallName());
+                                        finalOrder.setUser(MainActivity.id);
+                                        finalOrder.setDeliveryTo(null);
+                                        finalOrder.setQty(toPayAdapter.getItem(j).getQty()); //Added quantity. Changed to int!
+                                        finalOrder.setStatus(null);
+                                        finalOrder.setPrice(toPayAdapter.getItem(j).getPrice());
+                                        finalOrder.setTotalPrice(toPayAdapter.getItem(j).getTotalPrice());
+                                        finalOrder.setCollectStatus("SELF-COLLECT");
+                                        finalOrder.setTimestamp(D.format(date));
+                                        finalOrder.setId(keyo);
+                                        orderFinalRequests.add(finalOrder);
+                                        //dabaokeys.add(key);
+                                        dabaoDatabaseReference.child("self").child(keyo).setValue(orderFinalRequests);
+                                        //System.out.println("==="+dabaoDatabaseReference.child(key).toString());
+                                        toPayAdapter.remove(orderPayRequests.get(j));
+                                        System.out.println("===tpbawah0"+toPayAdapter.getCount());
+                                        //System.out.println("==="+orderPayRequests.size());
+                                        j--;
+                                    }
+                                }
+                                orderFinalRequests.clear();
+
+//                                    dabaoDatabaseReference.push().setValue(new WaitingDabaoer());
+
+                                toPayAdapter.notifyDataSetChanged();
+                                Toast.makeText(getContext(), "The PAY order has been saved", Toast.LENGTH_SHORT).show();
 
                                 for(int i=0;i<toPayAdapter.getCount();i++){
                                     if(toPayAdapter.getItem(i).getIsChecked()) {
@@ -148,7 +202,7 @@ public class OrderFragment1 extends Fragment {
                                     }
                                 }
 
-                                orderDatabaseReference.child(orderPayRequests.get(0).getStallName().toString()).child(key).setValue(orderPayRequests);
+                                //orderDatabaseReference.child(orderPayRequests.get(0).getStallName().toString()).child(key).setValue(orderPayRequests);
                                 Toast.makeText(getContext(), "Payment Confirmation Successfull", Toast.LENGTH_SHORT).show();
                             }})
                         .setNegativeButton(android.R.string.no, null).show();
@@ -178,7 +232,7 @@ public class OrderFragment1 extends Fragment {
                                         }
                                     }
                                     //update database send order to waiting tab
-                                    String key=dabaoDatabaseReference.push().getKey();
+                                    String key=dabaoDatabaseReference.child("dabaoer").push().getKey();
                                     System.out.println("===start order");
                                     System.out.println("===tp"+toPayAdapter.getCount());
                                     for(int j=0; j<toPayAdapter.getCount();j++){
@@ -187,6 +241,7 @@ public class OrderFragment1 extends Fragment {
                                             DateFormat D=new SimpleDateFormat("dd/MM/yy hh:mm:ss");
                                             D.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
                                             Date date = new Date();
+                                            /*
                                             WaitingDabaoer wd=new WaitingDabaoer();
                                             wd.setCanteenName(toPayAdapter.getItem(j).getCanteenName());
                                             wd.setFoodName(toPayAdapter.getItem(j).getFoodName());
@@ -199,13 +254,32 @@ public class OrderFragment1 extends Fragment {
                                             orderDabaoRequest.add(wd);
                                             wd.setId(key);
                                             dabaokeys.add(key);
-                                            dabaoDatabaseReference.child(key).setValue(orderDabaoRequest);
+                                            */
+                                            //input to final order
+                                            FinalOrder finalOrder = new FinalOrder();
+                                            finalOrder.setCanteenName(toPayAdapter.getItem(j).getCanteenName());
+                                            finalOrder.setFoodName(toPayAdapter.getItem(j).getFoodName());
+                                            finalOrder.setStallName(toPayAdapter.getItem(j).getStallName());
+                                            finalOrder.setUser(MainActivity.id);
+                                            finalOrder.setDeliveryTo(placeDeliver);
+                                            finalOrder.setQty(toPayAdapter.getItem(j).getQty()); //Added quantity. Changed to int!
+                                            finalOrder.setStatus("SEARCHING");
+                                            finalOrder.setCollectStatus("WAITING DABAOER");
+                                            finalOrder.setPrice(toPayAdapter.getItem(j).getPrice());
+                                            finalOrder.setTotalPrice(toPayAdapter.getItem(j).getTotalPrice());
+                                            finalOrder.setTimestamp(D.format(date));
+                                            finalOrder.setId(key);
+                                            orderFinalRequests.add(finalOrder);
+                                            dabaokeys.add(key);
+                                            dabaoDatabaseReference.child("dabaoer").child(key).setValue(orderFinalRequests);
+                                            //System.out.println("==="+dabaoDatabaseReference.child(key).toString());
                                             toPayAdapter.remove(orderPayRequests.get(j));
                                             System.out.println("===tpbawah"+toPayAdapter.getCount());
                                             //System.out.println("==="+orderPayRequests.size());
                                             j--;
                                         }
                                     }
+                                    orderFinalRequests.clear();
 
 //                                    dabaoDatabaseReference.push().setValue(new WaitingDabaoer());
 

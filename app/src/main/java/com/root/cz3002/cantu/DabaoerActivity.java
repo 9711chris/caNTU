@@ -39,7 +39,7 @@ public class DabaoerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_view_from_button);
-        dabaoDatabaseReference= FirebaseDatabase.getInstance().getReference().child("dabao");
+        dabaoDatabaseReference= FirebaseDatabase.getInstance().getReference().child("dabao").child("dabaoer");
         //m = new ArrayList<DRChildData>();
         dabaoRequests = new ArrayList<DabaoRequest>();
         //ArrayList<DRChildData> m = new ArrayList<DRChildData>();
@@ -140,21 +140,25 @@ public class DabaoerActivity extends AppCompatActivity {
                         updateStatusInDabaoDB(dabaoAdapter.getItem(pos));
                         //dabaoRequests = new ArrayList<DabaoRequest>();
                         populateAdapter();
-                        dabaoAdapter.notifyDataSetChanged();
-                        dabaoAdapter.notifyDataSetChanged();
-                        dabaoAdapter.notifyDataSetChanged();
+                        finish();
+                        startActivity(getIntent());
+                        //dabaoAdapter.notifyDataSetChanged();
+                        //dabaoAdapter.notifyDataSetChanged();
+                        //dabaoAdapter.notifyDataSetChanged();
                     }
                 });
             }
         });
 
     }
-    private DatabaseReference dabaoDatabaseRef = FirebaseDatabase.getInstance().getReference().child("dabao");
+    private DatabaseReference dabaoDatabaseRef = FirebaseDatabase.getInstance().getReference().child("dabao").child("dabaoer");
     private void updateStatusInDabaoDB(final DabaoRequest currentDabaoRequest){
         DatabaseReference statusRef = dabaoDatabaseRef.child(currentDabaoRequest.getKey()).getRef();
         int count = currentDabaoRequest.getChildCount();
         for(int i =0; i<count; i++){
-            statusRef.child(String.valueOf(i)).child("status").setValue("FOUND");
+            if(statusRef.child(String.valueOf(i))!=null) {
+                statusRef.child(String.valueOf(i)).child("status").setValue("FOUND");
+            }
         }
     }
 
@@ -163,17 +167,20 @@ public class DabaoerActivity extends AppCompatActivity {
         dabaoValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                System.out.println("===+da"+dataSnapshot.getKey().toString());
                 for(DataSnapshot d : dataSnapshot.getChildren()){
+                    System.out.println("===+d"+d.getKey().toString());
                     DabaoRequest dabaoRequest = new DabaoRequest();
                     boolean found = false;
                     ArrayList<DRChildData> m = new ArrayList<DRChildData>();
                     int count = 0;
                     for(DataSnapshot d1: d.getChildren()){
-                        System.out.println("==="+d.getChildrenCount());
+                        System.out.println("===+d1"+d1.getKey().toString());
+                        System.out.println("===+"+d.getChildrenCount());
                         dabaoRequest.setCanteenName(d1.child("canteenName").getValue(String.class));
                         dabaoRequest.setPlaceDeliver(d1.child("deliveryTo").getValue(String.class));
-                        System.out.println("==="+d1.child("deliveryTo").getValue(String.class));
-                        System.out.println("==="+d1.child("status").getValue(String.class));
+                        System.out.println("===+"+d1.child("deliveryTo").getValue(String.class));
+                        System.out.println("===+"+d1.child("status").getValue(String.class));
                         if(d1.child("status").getValue(String.class).equals("FOUND")){
                             found = true;
                             break;
@@ -206,6 +213,7 @@ public class DabaoerActivity extends AppCompatActivity {
 
                     }
                 }
+                dabaoAdapter.notifyDataSetChanged();
             }
 
 
@@ -213,6 +221,7 @@ public class DabaoerActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
 
             }
+
         };
         dabaoDatabaseRef.addValueEventListener(dabaoValueEventListener);
         dabaoAdapter.notifyDataSetChanged();

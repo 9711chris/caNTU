@@ -80,7 +80,7 @@ public class WaitingAdapter extends ArrayAdapter<WaitingDabaoer> {
             @Override
             public void onClick(View v) {
                 //System.out.println("go in here");
-                dabaoDatabaseReference=FirebaseDatabase.getInstance().getReference().child("dabao").child(currentWaitingRequest.getId());
+                dabaoDatabaseReference=FirebaseDatabase.getInstance().getReference().child("dabao").child("dabaoer").child(currentWaitingRequest.getId());
                 Query foodQuery = dabaoDatabaseReference.orderByChild("foodName").equalTo(currentWaitingRequest.getFoodName());
 
                 foodQuery.addListenerForSingleValueEvent(new ValueEventListener() {

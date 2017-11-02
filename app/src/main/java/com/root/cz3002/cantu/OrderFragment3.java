@@ -42,7 +42,7 @@ public class OrderFragment3 extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         firebaseDatabase=FirebaseDatabase.getInstance();
-        dabaoDatabaseReference=firebaseDatabase.getReference().child("dabao");
+        dabaoDatabaseReference=firebaseDatabase.getReference().child("dabao").child("dabaoer");
         final ArrayList<WaitingDabaoer> waitingRequests = new ArrayList<WaitingDabaoer>();
         /*dabaoChildEventListener=new ChildEventListener() {
             @Override
@@ -111,15 +111,18 @@ public class OrderFragment3 extends Fragment {
                         for (Map a : data) {
                             //Log.e("a", a.toString());
                             if(a!=null){
-                            WaitingDabaoer wd = new WaitingDabaoer();
-                            wd.setStatus(a.get("status").toString());
-                            wd.setId(a.get("id").toString());
-                            wd.setFoodName(a.get("foodName").toString());
-                            wd.setCanteenName(a.get("canteenName").toString());
-                            wd.setTimestamp(a.get("timestamp").toString());
-                            wd.setDeliveryTo(a.get("deliveryTo").toString());
-                            waitingRequests.add(wd);
-                        }
+                                WaitingDabaoer wd = new WaitingDabaoer();
+                                wd.setStatus(a.get("status").toString());
+                                wd.setId(a.get("id").toString());
+                                wd.setFoodName(a.get("foodName").toString());
+                                wd.setCanteenName(a.get("canteenName").toString());
+                                wd.setTimestamp(a.get("timestamp").toString());
+                                wd.setDeliveryTo(a.get("deliveryTo").toString());
+                                if(!a.get("status").equals("FOUND")){
+                                    waitingRequests.add(wd);
+                                }
+
+                            }
                         }
                         //Log.e("dtaa", data.keySet().toString());
                     }
