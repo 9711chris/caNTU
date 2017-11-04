@@ -17,6 +17,7 @@ public class FinalOrder {
     private String timestamp;
     private double price;
     private double totalPrice;
+    private String orderStatus;
 
     public FinalOrder(){}
 
@@ -46,6 +47,7 @@ public class FinalOrder {
     public String getTimestamp(){return timestamp;}
     public double getPrice(){return price;}
     public double getTotalPrice(){return totalPrice;}
+    public String getOrderStatus(){return orderStatus;}
 
     public void setId(String id){this.id = id;}
     public void setFoodName(String foodName){this.foodName = foodName;}
@@ -59,4 +61,5 @@ public class FinalOrder {
     public void setUser(String user){this.user = user;}
     public void setPrice(double price){this.price = price;}
     public void setTotalPrice(double totalPrice){this.totalPrice = totalPrice;}
+    public void setOrderStatus(String orderStatus){this.orderStatus = orderStatus;}
 }

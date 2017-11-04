@@ -7,6 +7,7 @@ import com.root.cz3002.cantu.ToReceiveAdapter;
  */
 
 public class ToReceiveData {
+    private String key;
     private double price;
     private String foodName;
     private String stallName;
@@ -41,6 +42,8 @@ public class ToReceiveData {
 
     public int getQty() {return qty;}
 
+    public String getKey(){return key;}
+
     public void setPrice(double price) {
         this.price = price;
     }
@@ -68,4 +71,6 @@ public class ToReceiveData {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public void setKey(String key){this.key = key;}
 }

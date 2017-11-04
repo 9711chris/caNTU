@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -44,7 +45,17 @@ public class OrderFragment2 extends Fragment{
                 for(DataSnapshot d: dataSnapshot.getChildren()){
                     for(DataSnapshot d1: d.getChildren()){
                         for(DataSnapshot d2: d1.getChildren()){
+                            if(d2.child("orderStatus").getValue(String.class).equals("RECEIVED")) {
+                                break;
+                            }
+                            if(d2.child("collectStatus").getValue(String.class).equals("WAITING DABAOER")){
+                                if(d2.child("status").getValue(String.class).equals("SEARCHING")){
+                                    break;
+                                }
+                            }
                             ToReceiveData r = new ToReceiveData();
+                            System.out.println("===++"+d1.getKey());
+                            r.setKey(d1.getKey());
                             r.setCanteenName(d2.child("canteenName").getValue(String.class));
                             r.setFoodName(d2.child("foodName").getValue(String.class));
                             r.setPrice(d2.child("price").getValue(Double.class));
@@ -73,7 +84,7 @@ public class OrderFragment2 extends Fragment{
 
         ListView listView = (ListView) rootView.findViewById(R.id.listview_from_button);
         listView.setAdapter(toReceiveAdapter);
-        // Inflate the layout for this fragment
+
         return rootView;
     }
 }
