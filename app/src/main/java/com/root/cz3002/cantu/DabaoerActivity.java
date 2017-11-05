@@ -138,6 +138,7 @@ public class DabaoerActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         System.out.println("===kk");
                         updateStatusInDabaoDB(dabaoAdapter.getItem(pos));
+                        updateIsPaid(dabaoAdapter.getItem(pos));
                         //dabaoRequests = new ArrayList<DabaoRequest>();
                         populateAdapter();
                         finish();
@@ -160,6 +161,28 @@ public class DabaoerActivity extends AppCompatActivity {
                 statusRef.child(String.valueOf(i)).child("status").setValue("FOUND");
             }
         }
+    }
+
+    private void updateIsPaid(final DabaoRequest currenDabaoRequest){
+        final DatabaseReference ordersDatabaseRef = FirebaseDatabase.getInstance().getReference().child("orders").child(currenDabaoRequest.getStallName());
+
+        ordersDatabaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot d: dataSnapshot.getChildren()){
+                    for(DataSnapshot d1: d.getChildren()){
+                        if(d1.child("orderId").getValue(String.class).equals(currenDabaoRequest.getId())){
+                            ordersDatabaseRef.child(d.getKey()).child(d1.getKey()).child("isPaid").setValue(true);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void populateAdapter(){

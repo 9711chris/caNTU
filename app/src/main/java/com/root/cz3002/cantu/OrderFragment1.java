@@ -138,10 +138,11 @@ public class OrderFragment1 extends Fragment {
 
                             public void onClick(DialogInterface dialog, int whichButton) {
 
+                                String keyo = dabaoDatabaseReference.child("self").push().getKey();
                                 String key = "";
                                 Map<String,ArrayList<OrderPayData>> l_a = new HashMap<String, ArrayList<OrderPayData>>();
                                 Map<String,String> stall_uid = new HashMap<String, String>();
-                               //String key= orderDatabaseReference.child(orderPayRequests.get(0).getStallName().toString()).push().getKey();
+                                //String key= orderDatabaseReference.child(orderPayRequests.get(0).getStallName().toString()).push().getKey();
                                 for(OrderPayData a:orderPayRequests)
                                 {
 
@@ -156,6 +157,8 @@ public class OrderFragment1 extends Fragment {
 
                                         key = stall_uid.get(a.getStallName());
                                         a.setId(key);
+                                        a.setIsPaid(true);
+                                        a.setOrderId(keyo);
                                         if(!l_a.containsKey(key)){
                                             l_a.put(key,new ArrayList<OrderPayData>());
                                         }
@@ -167,13 +170,12 @@ public class OrderFragment1 extends Fragment {
                                     }
                                 }
                                 //input order to database
-                               for(Map.Entry<String,ArrayList<OrderPayData>> entry: l_a.entrySet()){
-                                   //System.out.println("==="+entry.getValue());
-                                   orderDatabaseReference.child(entry.getValue().get(0).getStallName()).child(entry.getKey()).setValue(entry.getValue());
-                               }
+                                for(Map.Entry<String,ArrayList<OrderPayData>> entry: l_a.entrySet()){
+                                    //System.out.println("==="+entry.getValue());
+                                    orderDatabaseReference.child(entry.getValue().get(0).getStallName()).child(entry.getKey()).setValue(entry.getValue());
+                                }
 
 
-                                String keyo = dabaoDatabaseReference.child("self").push().getKey();
                                 System.out.println("===start order0");
                                 System.out.println("===tp0"+toPayAdapter.getCount());
                                 for(int j=0; j<toPayAdapter.getCount();j++){
@@ -251,8 +253,44 @@ public class OrderFragment1 extends Fragment {
                                             toPayAdapter.getItem(i).setDeliverTo(placeDeliver);
                                         }
                                     }
-                                    //update database send order to waiting tab
                                     String key=dabaoDatabaseReference.child("dabaoer").push().getKey();
+                                    String keyy = "";
+                                    Map<String,ArrayList<OrderPayData>> l_a = new HashMap<String, ArrayList<OrderPayData>>();
+                                    Map<String,String> stall_uid = new HashMap<String, String>();
+                                    //String key= orderDatabaseReference.child(orderPayRequests.get(0).getStallName().toString()).push().getKey();
+                                    for(OrderPayData a:orderPayRequests)
+                                    {
+
+                                        //l_a = new HashMap<String, ArrayList<OrderPayData>>();
+
+                                        if(a.getIsChecked()){
+                                            //System.out.println("===punya key=="+stall_uid.containsKey(a.getStallName()));
+                                            if(!stall_uid.containsKey(a.getStallName())) {
+                                                keyy = orderDatabaseReference.child(a.getStallName()).push().getKey();
+                                                stall_uid.put(a.getStallName(), keyy);
+                                            }
+
+                                            keyy = stall_uid.get(a.getStallName());
+                                            a.setId(keyy);
+                                            a.setIsPaid(false);
+                                            a.setOrderId(key);
+                                            if(!l_a.containsKey(keyy)){
+                                                l_a.put(keyy,new ArrayList<OrderPayData>());
+                                            }
+
+                                            ArrayList<OrderPayData> al_op = l_a.get(keyy);
+                                            al_op.add(a);
+                                            l_a.put(keyy,al_op);
+                                            //orderDatabaseReference.child(a.getStallName().toString()).child(key).setValue(a);
+                                        }
+                                    }
+                                    //input order to database
+                                    for(Map.Entry<String,ArrayList<OrderPayData>> entry: l_a.entrySet()){
+                                        //System.out.println("==="+entry.getValue());
+                                        orderDatabaseReference.child(entry.getValue().get(0).getStallName()).child(entry.getKey()).setValue(entry.getValue());
+                                    }
+
+                                    //update database send order to waiting tab
                                     System.out.println("===start order");
                                     System.out.println("===tp"+toPayAdapter.getCount());
                                     for(int j=0; j<toPayAdapter.getCount();j++){
