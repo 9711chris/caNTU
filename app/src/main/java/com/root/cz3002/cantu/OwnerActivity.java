@@ -134,11 +134,17 @@ public class OwnerActivity extends AppCompatActivity {
                 Map<String, Object> dataSnapshotValue= (Map<String, Object>) dataSnapshot.getValue();
                 if (dataSnapshotValue != null) {
                     for (Map.Entry<String, Object> a : dataSnapshotValue.entrySet()) {
+                        boolean isPaidBool = true;
                         sum = 0;
                         String key = "";
                         ArrayList<SOChildData> childList = new ArrayList<SOChildData>();
                         ArrayList<Map<String, Object>> d = (ArrayList) a.getValue();
                         for (Map<String, Object> data : d) {
+                            String isPaid = data.get("isPaid").toString();
+                            if (isPaid.equals("false")) {
+                                isPaidBool = false;
+                                break;
+                            }
                             double price = (double) data.get("price");
                             String foodName = data.get("foodName").toString();
                             long quantity = (long) data.get("qty");
@@ -148,6 +154,8 @@ public class OwnerActivity extends AppCompatActivity {
                             SOChildData child = new SOChildData(foodName, quantity);
                             childList.add(child);
                         }
+                        if (isPaidBool == false)
+                            continue;
                         Log.e("Price", String.valueOf(sum));
                         SOHeaderData header = new SOHeaderData("order " + (++count), sum, key);
                         Log.e("ID", count + " " + key);
